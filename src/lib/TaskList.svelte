@@ -1,5 +1,5 @@
 <script>
-  import Checkbox from "./Checkbox.svelte";
+  import TaskItem from "./TaskItem.svelte";
 
   // Task -> id, value, isDone
   export let tasks = [];
@@ -25,14 +25,7 @@
 <div class="h-screen p-8 bg-zinc-950">
   <ul>
     {#each tasks as task, index}
-      <li class="flex items-center gap-4">
-        <Checkbox
-          isChecked={task.isDone}
-          handleClick={() => handleTaskCheck(index)}
-        />
-        <p>{task.value}</p>
-        <button>Editar</button>
-      </li>
+      <TaskItem {index} {task} {handleTaskCheck}/>
     {/each}
   </ul>
 </div>
