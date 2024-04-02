@@ -4,8 +4,9 @@
   // Task -> id, value, isDone
   export let tasks = [];
 
-  function handleTaskEdit(value, index) {
+  function handleEditTask(value, index) {
     tasks[index].value = value;
+    console.log("ay", tasks);
   }
 
   function handleTaskCheck(index) {
@@ -22,10 +23,12 @@
   }
 </script>
 
-<div class="h-screen p-8 bg-zinc-950">
+{@debug tasks}
+
+<div class="h-full p-8">
   <ul>
     {#each tasks as task, index}
-      <TaskItem {index} {task} {handleTaskCheck}/>
+      <TaskItem {index} {task} {handleTaskCheck} {handleEditTask} />
     {/each}
   </ul>
 </div>
