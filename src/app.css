@@ -30,24 +30,32 @@ h1 {
   line-height: 1.1;
 }
 
+h1,
+h2,
+h3 {
+  font-weight: 600;
+}
+
+input {
+  padding: 12px;
+}
+
+input:focus {
+  outline: none;
+}
+
 button {
   padding: 0.6em 1.2em;
-  border-radius: 0.5rem;
+  border-radius: 4px;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
   background-color: theme("colors.zinc.700");
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  box-shadow: 0px 0px 20px #000000;
-  transition: shadow 100ms;
-}
+  overflow: hidden;
+  position: relative;
 
-input:focus,
-select:focus,
-textarea:focus,
-button:focus {
-    outline: none;
+  &:hover {
+    filter: brightness(0.9);
+  }
 }

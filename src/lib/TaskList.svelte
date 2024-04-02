@@ -1,4 +1,5 @@
 <script>
+  import MainInput from "./MainInput.svelte";
   import TaskItem from "./TaskItem.svelte";
 
   // Task -> id, value, isDone
@@ -6,29 +7,38 @@
 
   function handleEditTask(value, index) {
     tasks[index].value = value;
-    console.log("ay", tasks);
   }
 
-  function handleTaskCheck(index) {
+  function handleCheckTask(index) {
     tasks[index].isDone = !tasks[index].isDone;
   }
 
-  function handleTaskDelete(index) {
+  function handleDeleteTask(index) {
     tasks.splice(index, 1);
     tasks = tasks;
   }
 
-  function handleTaskAdd(task = { value: "", isDone: false }) {
-    tasks = [...tasks, task];
+  function handleAddTask(value) {
+    tasks.unshift({
+      id: tasks.length + 1,
+      value: value,
+      isDone: false,
+    });
+    tasks = tasks;
   }
 </script>
 
-{@debug tasks}
-
-<div class="h-full p-8">
-  <ul>
-    {#each tasks as task, index}
-      <TaskItem {index} {task} {handleTaskCheck} {handleEditTask} />
+<div class="m-auto h-full flex flex-col gap-6 p-8 max-w-screen-md">
+  <MainInput onAdd={handleAddTask} />
+  <ul class="flex flex-col">
+    {#each tasks as task, index (task.id)}
+      <TaskItem
+        {index}
+        {task}
+        {handleCheckTask}
+        {handleEditTask}
+        {handleDeleteTask}
+      />
     {/each}
   </ul>
 </div>

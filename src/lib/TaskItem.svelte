@@ -5,42 +5,46 @@
     value: "",
     isDone: false,
   };
-  export let index = 0;
-  export let handleTaskCheck = (index) => {};
+  export let index;
+  export let handleCheckTask = (index) => {};
   export let handleEditTask = (value, index) => {};
+  export let handleDeleteTask = (index) => {};
 
   $: fontStyling = task.isDone ? "text-slate-500" : "";
   let inputValue = task.value;
+  let inputLock = true;
 
-  function handleBlur(event) {
-    const value = event.target.value;
+  function toggleLock() {
+    inputLock = !inputLock;
+  }
 
+  function handleSubmit(event) {
+    event.preventDefault();
+    const value = inputValue.trim();
+    if (!value) {
+      handleDeleteTask(index);
+      return;
+    }
     if (value !== task.value) {
       handleEditTask(value, index);
+      toggleLock();
     }
   }
 </script>
 
-{@debug task}
-
-<li class="flex items-center gap-4 h-10">
-  <Checkbox
-    isChecked={task.isDone}
-    handleClick={() => handleTaskCheck(index)}
-  />
-  <input
-    id={String(index)}
-    class="{fontStyling} p-2 bg-transparent w-10/12 resize-none"
-    on:blur={handleBlur}
-    bind:value={inputValue}
-  />
-  <div class="flex gap-4 items-center">
-    <button>Deletar</button>
-  </div>
+<li>
+  <form
+    on:submit={handleSubmit}
+    class="flex items-center rounded-md gap-2 h-10 p-2 hover:bg-zinc-700"
+  >
+    <Checkbox
+      isChecked={task.isDone}
+      handleClick={() => handleCheckTask(index)}
+    />
+    <input
+      class="{fontStyling} bg-transparent w-11/12"
+      bind:value={inputValue}
+      readonly={inputLock}
+    />
+  </form>
 </li>
-
-<style>
-  input:focus {
-    border-bottom: 2px solid theme("colors.zinc.700");
-  }
-</style>
