@@ -3,7 +3,14 @@
   import TaskItem from "./TaskItem.svelte";
 
   // Task -> id, value, isDone
-  export let tasks = [];
+  // ID is added after task creation, and is based on the array length.
+  // Pretty lazy, I know.
+  let tasks = JSON.parse(localStorage.getItem("tasks")) ?? [];
+
+  // Whenever there's a change in tasks, save it to the local storage.
+  $: {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }
 
   function handleEditTask(value, index) {
     tasks[index].value = value;
@@ -19,6 +26,7 @@
   }
 
   function handleAddTask(value) {
+    // Defining Task ID, what could go wrong?
     tasks.unshift({
       id: tasks.length + 1,
       value: value,
