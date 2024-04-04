@@ -1,5 +1,10 @@
 <script>
+  import {
+    CheckPlusCircleOutline,
+    TrashBinOutline,
+  } from "flowbite-svelte-icons";
   import Checkbox from "./Checkbox.svelte";
+  import IconButton from "./IconButton.svelte";
 
   export let task = {
     value: "",
@@ -9,13 +14,31 @@
   export let handleCheckTask = (index) => {};
   export let handleEditTask = (value, index) => {};
   export let handleDeleteTask = (index) => {};
-
-  $: fontStyling = task.isDone ? "text-slate-500" : "";
   let inputValue = task.value;
   let inputLock = true;
+  let btnShow = false;
 
-  function toggleLock() {
-    inputLock = !inputLock;
+  $: fontStyling = task.isDone ? "text-slate-500" : "";
+  $: inputStyling = inputLock ? "cursor-pointer select-none" : "";
+  $: itemStyling = inputLock ? "" : "shadow-lg bg-zinc-700";
+
+  function toggleBtnShow() {
+    btnShow = !btnShow;
+  }
+
+  function toggleLock(value = !inputLock) {
+    inputLock = value;
+  }
+
+  function handleKey(event) {
+    if (event.key === "Escape") handleBlur();
+  }
+
+  function handleBlur(event) {
+    if (!inputValue.trim()) {
+      inputValue = task.value;
+    }
+    toggleLock(true);
   }
 
   function handleSubmit(event) {
@@ -35,16 +58,29 @@
 <li>
   <form
     on:submit={handleSubmit}
-    class="flex items-center rounded-md gap-2 h-10 p-2 hover:bg-zinc-700"
+    on:mouseenter={toggleBtnShow}
+    on:mouseleave={toggleBtnShow}
+    class="flex items-center transition-all rounded-md gap-2 h-10 pl-2 hover:bg-zinc-700 overflow-hidden {itemStyling}"
   >
     <Checkbox
       isChecked={task.isDone}
       handleClick={() => handleCheckTask(index)}
     />
     <input
-      class="{fontStyling} bg-transparent w-11/12"
+      class="{fontStyling} {inputStyling} bg-transparent w-11/12"
       bind:value={inputValue}
+      on:click={() => toggleLock(false)}
+      on:blur={handleBlur}
+      on:keydown={handleKey}
       readonly={inputLock}
+      placeholder="Enter to delete // Esc to undo changes."
     />
+    {#if btnShow}
+      <div class="h-full flex">
+        <IconButton class="rounded-none">
+          <CheckPlusCircleOutline class="text-zinc-300" />
+        </IconButton>
+      </div>
+    {/if}
   </form>
 </li>
