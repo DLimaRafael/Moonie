@@ -1,8 +1,16 @@
 <script>
   import { PlusOutline } from "flowbite-svelte-icons";
+  import IconButton from "./IconButton.svelte";
 
   export let onAdd = (value) => {};
   let taskValue = "";
+  let inputFocus = false;
+
+  $: formStyling = inputFocus && "shadow-lg";
+
+  function toggleFocus() {
+    inputFocus = !inputFocus;
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -15,14 +23,16 @@
 
 <form
   on:submit={handleSubmit}
-  class="flex w-11/12 h-10 ml-auto mr-auto bg-zinc-900 rounded-sm border border-zinc-500"
+  class="flex w-11/12 h-10 ml-auto mr-auto bg-zinc-700 rounded-md overflow-hidden transition-shadow {formStyling}"
 >
   <input
     bind:value={taskValue}
-    placeholder="..."
-    class="w-11/12 h-full bg-transparent"
+    on:focus={toggleFocus}
+    on:blur={toggleFocus}
+    placeholder="Something to do..."
+    class="flex-1 h-full bg-zinc-700"
   />
-  <button type="submit" class="bg-zinc-900 w-1/12 h-full flex items-center">
+  <IconButton type="submit">
     <PlusOutline class="text-zinc-300" />
-  </button>
+  </IconButton>
 </form>

@@ -1,7 +1,9 @@
 <script>
   import {
     CheckPlusCircleOutline,
-    TrashBinOutline,
+    CheckPlusCircleSolid,
+    PlusOutline,
+    TrashBinSolid,
   } from "flowbite-svelte-icons";
   import Checkbox from "./Checkbox.svelte";
   import IconButton from "./IconButton.svelte";
@@ -67,20 +69,27 @@
       handleClick={() => handleCheckTask(index)}
     />
     <input
-      class="{fontStyling} {inputStyling} bg-transparent w-11/12"
+      class="{fontStyling} {inputStyling} bg-transparent flex-1"
       bind:value={inputValue}
       on:click={() => toggleLock(false)}
+      on:focus={() => toggleLock(false)}
       on:blur={handleBlur}
       on:keydown={handleKey}
       readonly={inputLock}
       placeholder="Enter to delete // Esc to undo changes."
     />
-    {#if btnShow}
-      <div class="h-full flex">
+    <div class="h-full flex">
+      {#if btnShow}
         <IconButton class="rounded-none">
-          <CheckPlusCircleOutline class="text-zinc-300" />
+          <CheckPlusCircleSolid class="text-zinc-300" />
         </IconButton>
-      </div>
-    {/if}
+        <IconButton
+          onClick={() => handleDeleteTask(index)}
+          class="rounded-none"
+        >
+          <TrashBinSolid class="text-red-400" />
+        </IconButton>
+      {/if}
+    </div>
   </form>
 </li>
