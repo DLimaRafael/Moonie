@@ -1,8 +1,4 @@
-<script>
-  export let onClick = (event = undefined) => {};
-</script>
-
-<button on:click={onClick} {...$$restProps}>
+<button type="button" on:click {...$$restProps}>
   <slot />
 </button>
 

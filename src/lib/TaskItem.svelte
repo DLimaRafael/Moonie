@@ -1,24 +1,23 @@
 <script>
-  import {
-    CheckPlusCircleOutline,
-    CheckPlusCircleSolid,
-    PlusOutline,
-    TrashBinSolid,
-  } from "flowbite-svelte-icons";
+  import { CheckPlusCircleOutline, TrashBinSolid } from "flowbite-svelte-icons";
   import Checkbox from "./Checkbox.svelte";
   import IconButton from "./IconButton.svelte";
 
   export let task = {
+    id: "",
     value: "",
     isDone: false,
+    children: [],
   };
-  export let index;
-  export let handleCheckTask = (index) => {};
-  export let handleEditTask = (value, index) => {};
-  export let handleDeleteTask = (index) => {};
-  let inputValue = task.value;
+  export let handleCheckTask;
+  export let handleEditTask;
+  export let handleDeleteTask;
+  export let handleAddChild;
+  export let isChild = false;
+
   let inputLock = true;
   let btnShow = false;
+  let inputValue = task.value;
 
   $: fontStyling = task.isDone ? "text-slate-500" : "";
   $: inputStyling = inputLock ? "cursor-pointer select-none" : "";
@@ -47,29 +46,32 @@
     event.preventDefault();
     const value = inputValue.trim();
     if (!value) {
-      handleDeleteTask(index);
-      return;
+      // handleDeleteTask(task.id);
+      // return;
+      console.log("empty", value, inputValue);
     }
     if (value !== task.value) {
-      handleEditTask(value, index);
+      handleEditTask(value, task.id);
       toggleLock();
     }
   }
 </script>
+
+<!-- {@debug inputValue} -->
 
 <li>
   <form
     on:submit={handleSubmit}
     on:mouseenter={toggleBtnShow}
     on:mouseleave={toggleBtnShow}
-    class="flex items-center transition-all rounded-md gap-2 h-10 pl-2 hover:bg-zinc-700 overflow-hidden {itemStyling}"
+    class="flex items-center transition-all rounded-md gap-2 min-h-10 pl-2 hover:bg-zinc-700 overflow-hidden {itemStyling}"
   >
     <Checkbox
       isChecked={task.isDone}
-      handleClick={() => handleCheckTask(index)}
+      handleClick={() => handleCheckTask(task.id)}
     />
     <input
-      class="{fontStyling} {inputStyling} bg-transparent flex-1"
+      class="{fontStyling} {inputStyling} bg-transparent flex-1 border-none"
       bind:value={inputValue}
       on:click={() => toggleLock(false)}
       on:focus={() => toggleLock(false)}
@@ -80,11 +82,16 @@
     />
     <div class="h-full flex">
       {#if btnShow}
-        <IconButton class="rounded-none">
-          <CheckPlusCircleSolid class="text-zinc-300" />
-        </IconButton>
+        {#if !isChild}
+          <IconButton
+            on:click={() => handleAddChild(task.id)}
+            class="rounded-none"
+          >
+            <CheckPlusCircleOutline class="text-zinc-300" />
+          </IconButton>
+        {/if}
         <IconButton
-          onClick={() => handleDeleteTask(index)}
+          on:click={() => handleDeleteTask(task.id)}
           class="rounded-none"
         >
           <TrashBinSolid class="text-red-400" />

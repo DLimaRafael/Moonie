@@ -7,46 +7,94 @@
   // Pretty lazy, I know.
   let tasks = JSON.parse(localStorage.getItem("tasks")) ?? [];
 
+  $: parentTasks = tasks.filter((task) => {
+    return !tasks.some((parent) => parent.children.includes(task.id));
+  });
+
   // Whenever there's a change in tasks, save it to the local storage.
   $: {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }
 
-  function handleEditTask(value, index) {
+  function serializeTask() {
+    return {
+      id: "",
+      value: "",
+      isDone: "",
+      children: [],
+    };
+  }
+
+  function handleEditTask(value, id) {
+    const index = tasks.findIndex((task) => task.id === id);
     tasks[index].value = value;
   }
 
-  function handleCheckTask(index) {
+  function handleCheckTask(id) {
+    const index = tasks.findIndex((task) => task.id === id);
     tasks[index].isDone = !tasks[index].isDone;
   }
 
-  function handleDeleteTask(index) {
+  function handleDeleteTask(id) {
+    const index = tasks.findIndex((task) => task.id === id);
     tasks.splice(index, 1);
     tasks = tasks;
   }
 
+  function generateUniqueId() {
+    return Date.now().toString(36) + Math.random().toString(36).substring(1, 7);
+  }
+
   function handleAddTask(value) {
-    // Defining Task ID, what could go wrong?
-    tasks.unshift({
-      id: tasks.length + 1,
+    let newTask = serializeTask();
+    newTask = {
+      ...newTask,
+      id: generateUniqueId(),
       value: value,
-      isDone: false,
-    });
+    };
+    tasks.push(newTask);
+    tasks = tasks;
+    return newTask;
+  }
+
+  function handleAddChild(id) {
+    const childTask = handleAddTask("");
+
+    let index = tasks.findIndex((task) => task.id === id);
+    tasks[index].children.push(childTask.id);
     tasks = tasks;
   }
+
+  function getChildren(children) {
+    return tasks.filter((task) => children.includes(task.id));
+  }
 </script>
+
+{@debug tasks}
 
 <div class="m-auto h-full flex flex-col gap-6 p-8 max-w-screen-md">
   <MainInput onAdd={handleAddTask} />
   <ul class="flex flex-col">
-    {#each tasks as task, index (task.id)}
+    {#each parentTasks as task (task.id)}
       <TaskItem
-        {index}
         {task}
+        {handleAddChild}
         {handleCheckTask}
-        {handleEditTask}
         {handleDeleteTask}
+        {handleEditTask}
       />
+      {#each getChildren(task.children) as child (child.id)}
+        <ul class="ml-10">
+          <TaskItem
+            task={child}
+            {handleAddChild}
+            {handleCheckTask}
+            {handleDeleteTask}
+            {handleEditTask}
+            isChild
+          />
+        </ul>
+      {/each}
     {/each}
   </ul>
 </div>
