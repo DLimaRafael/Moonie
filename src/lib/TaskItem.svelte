@@ -36,8 +36,12 @@
   }
 
   function handleBlur(event) {
-    if (!inputValue.trim()) {
+    const value = inputValue.trim();
+    if (!value) {
       inputValue = task.value;
+    }
+    if (value !== task.value) {
+      handleEditTask(value, task.id);
     }
     toggleLock(true);
   }
@@ -79,7 +83,7 @@
       on:blur={handleBlur}
       on:keydown={handleKey}
       readonly={inputLock}
-      placeholder="Enter to delete // Esc to undo changes."
+      placeholder={task.value}
     />
     <div class="h-full flex">
       {#if btnShow}
