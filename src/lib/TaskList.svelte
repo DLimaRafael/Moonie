@@ -35,9 +35,17 @@
     tasks[index].isDone = !tasks[index].isDone;
   }
 
-  function handleDeleteTask(id) {
+  function handleDeleteTask(id, parentId = "") {
     const index = tasks.findIndex((task) => task.id === id);
     tasks.splice(index, 1);
+
+    if (parentId) {
+      const parentIndex = tasks.findIndex((task) => task.id === parentId);
+      tasks[parentIndex].children = tasks[parentIndex].children.filter(
+        (child) => child !== id
+      );
+    }
+
     tasks = tasks;
   }
 
@@ -91,7 +99,7 @@
             {handleCheckTask}
             {handleDeleteTask}
             {handleEditTask}
-            isChild
+            parentId={task.id}
           />
         </ul>
       {/each}

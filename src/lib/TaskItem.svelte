@@ -13,7 +13,7 @@
   export let handleEditTask;
   export let handleDeleteTask;
   export let handleAddChild;
-  export let isChild = false;
+  export let parentId = "";
 
   let inputLock = true;
   let btnShow = false;
@@ -42,13 +42,16 @@
     toggleLock(true);
   }
 
+  function onDelete() {
+    handleDeleteTask(task.id, parentId);
+  }
+
   function handleSubmit(event) {
     event.preventDefault();
     const value = inputValue.trim();
     if (!value) {
-      // handleDeleteTask(task.id);
-      // return;
-      console.log("empty", value, inputValue);
+      onDelete();
+      return;
     }
     if (value !== task.value) {
       handleEditTask(value, task.id);
@@ -56,8 +59,6 @@
     }
   }
 </script>
-
-<!-- {@debug inputValue} -->
 
 <li>
   <form
@@ -82,7 +83,7 @@
     />
     <div class="h-full flex">
       {#if btnShow}
-        {#if !isChild}
+        {#if !parentId}
           <IconButton
             on:click={() => handleAddChild(task.id)}
             class="rounded-none"
@@ -90,10 +91,7 @@
             <CheckPlusCircleOutline class="text-zinc-300" />
           </IconButton>
         {/if}
-        <IconButton
-          on:click={() => handleDeleteTask(task.id)}
-          class="rounded-none"
-        >
+        <IconButton on:click={onDelete} class="rounded-none">
           <TrashBinSolid class="text-red-400" />
         </IconButton>
       {/if}
