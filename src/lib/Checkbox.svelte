@@ -13,7 +13,7 @@
 
 <button
   type="button"
-  class="flex items-center justify-center {size} rounded-md p-0 {background}"
+  class="flex items-center justify-center {size} rounded-sm p-0 {background}"
   on:click={handleClick}
 >
   <CheckOutline class={iconBackground} />

@@ -82,7 +82,7 @@
 
 <div class="m-auto h-full flex flex-col gap-6 p-8 max-w-screen-md">
   <MainInput onAdd={handleAddTask} />
-  <ul class="flex flex-col">
+  <ul class="flex flex-col h-full">
     {#each parentTasks as task (task.id)}
       <TaskItem
         {task}
@@ -92,7 +92,7 @@
         {handleEditTask}
       />
       {#each getChildren(task.children) as child (child.id)}
-        <ul class="ml-10">
+        <ul class="ml-7">
           <TaskItem
             task={child}
             {handleAddChild}

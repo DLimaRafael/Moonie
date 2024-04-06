@@ -6,7 +6,6 @@
   button {
     padding: 0.5rem;
     width: 2.5rem;
-    height: 2.5rem;
     background-color: transparent;
     transition: background-color 200ms;
     &:hover {

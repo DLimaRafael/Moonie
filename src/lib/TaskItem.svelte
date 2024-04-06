@@ -23,8 +23,8 @@
   $: inputStyling = inputLock ? "cursor-pointer select-none" : "";
   $: itemStyling = inputLock ? "" : "shadow-lg bg-zinc-700";
 
-  function toggleBtnShow() {
-    btnShow = !btnShow;
+  function toggleBtnShow(value = !btnShow) {
+    btnShow = !inputLock ? true : value;
   }
 
   function toggleLock(value = !inputLock) {
@@ -36,18 +36,22 @@
   }
 
   function handleBlur(event) {
-    const value = inputValue.trim();
-    if (!value) {
-      inputValue = task.value;
-    }
+    const value = inputValue.trim() || task.value;
+    inputValue = value;
+
     if (value !== task.value) {
       handleEditTask(value, task.id);
     }
     toggleLock(true);
+    toggleBtnShow(false);
   }
 
   function onDelete() {
     handleDeleteTask(task.id, parentId);
+  }
+
+  function onAddChild() {
+    handleAddChild(task.id);
   }
 
   function handleSubmit(event) {
@@ -67,9 +71,9 @@
 <li>
   <form
     on:submit={handleSubmit}
-    on:mouseenter={toggleBtnShow}
-    on:mouseleave={toggleBtnShow}
-    class="flex items-center transition-all rounded-md gap-2 min-h-10 pl-2 hover:bg-zinc-700 overflow-hidden {itemStyling}"
+    on:mouseenter={() => toggleBtnShow(true)}
+    on:mouseleave={() => toggleBtnShow(false)}
+    class="flex items-center transition-all rounded-md gap-1 h-10 pl-2 hover:bg-zinc-700 overflow-hidden {itemStyling}"
   >
     <Checkbox
       isChecked={task.isDone}
@@ -78,20 +82,16 @@
     <input
       class="{fontStyling} {inputStyling} bg-transparent flex-1 border-none"
       bind:value={inputValue}
-      on:click={() => toggleLock(false)}
       on:focus={() => toggleLock(false)}
       on:blur={handleBlur}
       on:keydown={handleKey}
       readonly={inputLock}
-      placeholder={task.value}
+      placeholder={task.value || "..."}
     />
     <div class="h-full flex">
       {#if btnShow}
         {#if !parentId}
-          <IconButton
-            on:click={() => handleAddChild(task.id)}
-            class="rounded-none"
-          >
+          <IconButton on:click={onAddChild} class="rounded-none p-20">
             <CheckPlusCircleOutline class="text-zinc-300" />
           </IconButton>
         {/if}

@@ -23,7 +23,7 @@
 
 <form
   on:submit={handleSubmit}
-  class="flex w-11/12 h-10 ml-auto mr-auto bg-zinc-700 rounded-md overflow-hidden transition-shadow {formStyling}"
+  class="flex w-11/12 h-12 ml-auto mr-auto bg-zinc-700 rounded-md overflow-hidden transition-shadow {formStyling}"
 >
   <input
     bind:value={taskValue}
