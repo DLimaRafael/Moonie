@@ -13,22 +13,30 @@
   export let handleEditTask;
   export let handleDeleteTask;
   export let handleAddChild;
+  export let childrenProgress = null;
   export let parentId = "";
 
   let inputLock = true;
   let btnShow = false;
   let inputValue = task.value;
 
-  $: fontStyling = task.isDone ? "text-slate-500" : "";
+  $: complete =
+    task.isDone ||
+    (task.children.length && childrenProgress === task.children.length);
+  $: fontStyling = complete ? "text-slate-500" : "";
   $: inputStyling = inputLock ? "cursor-pointer select-none" : "";
   $: itemStyling = inputLock ? "" : "shadow-lg bg-zinc-700";
 
   function toggleBtnShow(value = !btnShow) {
-    btnShow = !inputLock ? true : value;
+    btnShow = value;
   }
 
   function toggleLock(value = !inputLock) {
     inputLock = value;
+  }
+
+  function toggleCheck(value = !complete) {
+    complete = value;
   }
 
   function handleKey(event) {
@@ -43,7 +51,6 @@
       handleEditTask(value, task.id);
     }
     toggleLock(true);
-    toggleBtnShow(false);
   }
 
   function onDelete() {
@@ -76,8 +83,10 @@
     class="flex items-center transition-all rounded-md gap-1 h-10 pl-2 hover:bg-zinc-700 overflow-hidden {itemStyling}"
   >
     <Checkbox
-      isChecked={task.isDone}
-      handleClick={() => handleCheckTask(task.id)}
+      isChecked={complete}
+      on:click={() => handleCheckTask(task.id)}
+      progress={childrenProgress}
+      total={task.children.length}
     />
     <input
       class="{fontStyling} {inputStyling} bg-transparent flex-1 border-none"

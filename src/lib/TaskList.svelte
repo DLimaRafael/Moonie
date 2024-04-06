@@ -76,6 +76,10 @@
   function getChildren(children) {
     return tasks.filter((task) => children.includes(task.id));
   }
+
+  function getCompletedChildren(children) {
+    return getChildren(children).filter((child) => child.isDone);
+  }
 </script>
 
 {@debug tasks}
@@ -90,6 +94,7 @@
         {handleCheckTask}
         {handleDeleteTask}
         {handleEditTask}
+        childrenProgress={getCompletedChildren(task.children).length}
       />
       {#each getChildren(task.children) as child (child.id)}
         <ul class="ml-7">
