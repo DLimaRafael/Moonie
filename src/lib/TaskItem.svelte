@@ -35,22 +35,23 @@
     inputLock = value;
   }
 
-  function toggleCheck(value = !complete) {
-    complete = value;
-  }
-
   function handleKey(event) {
     if (event.key === "Escape") handleBlur();
+    if (event.shiftKey && event.key === "Enter") {
+      handleAddChild(parentId || task.id);
+    }
+  }
+
+  function handleFocus(event) {
+    toggleLock(false);
   }
 
   function handleBlur(event) {
-    const value = inputValue.trim() || task.value;
-    inputValue = value;
-
-    if (value !== task.value) {
-      handleEditTask(value, task.id);
+    if (!inputValue) {
+      inputValue = task.value;
+    } else {
+      handleSubmit();
     }
-    toggleLock(true);
   }
 
   function onDelete() {
@@ -62,7 +63,8 @@
   }
 
   function handleSubmit(event) {
-    event.preventDefault();
+    toggleLock(true);
+    event?.preventDefault();
     const value = inputValue.trim();
     if (!value) {
       onDelete();
@@ -70,7 +72,6 @@
     }
     if (value !== task.value) {
       handleEditTask(value, task.id);
-      toggleLock();
     }
   }
 </script>
@@ -84,14 +85,15 @@
   >
     <Checkbox
       isChecked={complete}
-      on:click={() => handleCheckTask(task.id)}
+      on:click={() => handleCheckTask(task)}
       progress={childrenProgress}
       total={task.children.length}
     />
     <input
       class="{fontStyling} {inputStyling} bg-transparent flex-1 border-none"
       bind:value={inputValue}
-      on:focus={() => toggleLock(false)}
+      on:click={handleFocus}
+      on:focus={handleFocus}
       on:blur={handleBlur}
       on:keydown={handleKey}
       readonly={inputLock}
