@@ -14,8 +14,7 @@ _And that's all it needs!_
 
 ## Known Issues
 
-- No Multiline support
-- Checkbox unwanted behavior when checking while task with children all marked
+- No Multiline support || Not Priority
 
 ## External Tools Used
 

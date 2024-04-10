@@ -16,9 +16,10 @@
   export let parentId = "";
 
   let inputLock = true;
-  let btnShow = false;
   let inputValue = task.value;
+  let isMouseOver = false;
 
+  $: btnShow = !inputLock || isMouseOver;
   $: complete =
     task.isDone ||
     (task.children.length && childrenProgress === task.children.length);
@@ -26,12 +27,12 @@
   $: inputStyling = inputLock ? "cursor-pointer select-none" : "";
   $: itemStyling = inputLock ? "" : "shadow-lg bg-zinc-700";
 
-  function toggleBtnShow(value = !btnShow) {
-    btnShow = value;
-  }
-
   function toggleLock(value = !inputLock) {
     inputLock = value;
+  }
+
+  function toggleMouseOver(value = !isMouseOver) {
+    isMouseOver = value;
   }
 
   function handleKey(event) {
@@ -51,6 +52,7 @@
     } else {
       handleSubmit();
     }
+    toggleLock(true);
   }
 
   function onDelete() {
@@ -62,6 +64,7 @@
   }
 
   function onCheck() {
+    if (childrenProgress === task.children.length) return;
     handleSave({
       ...task,
       isDone: !task.isDone,
@@ -88,8 +91,8 @@
 <li>
   <form
     on:submit={handleSubmit}
-    on:mouseenter={() => toggleBtnShow(true)}
-    on:mouseleave={() => toggleBtnShow(false)}
+    on:mouseenter={() => toggleMouseOver(true)}
+    on:mouseleave={() => toggleMouseOver(false)}
     class="flex items-center transition-all rounded-md gap-1 h-10 pl-2 hover:bg-zinc-700 overflow-hidden {itemStyling}"
   >
     <Checkbox

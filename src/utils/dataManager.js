@@ -1,7 +1,5 @@
 import { taskData } from "../stores/tasks";
 
-let newData = [];
-
 export function saveTask(data, parentId) {
   taskData.update((tasks) => {
     const index = tasks.findIndex((task) => task.id === data.id);
