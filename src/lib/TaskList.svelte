@@ -1,6 +1,12 @@
 <script>
   import { taskData } from "../stores/tasks";
-  import { deleteTask, saveTask } from "../utils/dataManager";
+  import {
+    createTask,
+    deleteTask,
+    getTaskChildren,
+    getTaskProgress,
+    saveTask,
+  } from "../utils/dataManager";
   import MainInput from "./MainInput.svelte";
   import TaskItem from "./TaskItem.svelte";
 
@@ -34,19 +40,12 @@
       id: generateUniqueId(),
       value: value,
     };
-    saveTask(newTask, parentId);
+
+    createTask(newTask, parentId);
   }
 
   function handleAddChild(id) {
     handleAddTask("", id);
-  }
-
-  function getChildren(children) {
-    return tasks.filter((task) => children.includes(task.id));
-  }
-
-  function getCompletedChildren(children) {
-    return getChildren(children).filter((child) => child.isDone);
   }
 
   function handleSearch(value) {
@@ -63,9 +62,9 @@
         {handleAddChild}
         handleDelete={deleteTask}
         handleSave={saveTask}
-        childrenProgress={getCompletedChildren(task.children).length}
+        childrenProgress={getTaskProgress(task.id)}
       />
-      {#each getChildren(task.children) as child (child.id)}
+      {#each getTaskChildren(task.id) as child (child.id)}
         <ul class="ml-7">
           <TaskItem
             task={child}

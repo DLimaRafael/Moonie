@@ -19,10 +19,8 @@
   let inputValue = task.value;
   let isMouseOver = false;
 
+  $: complete = task.isDone;
   $: btnShow = !inputLock || isMouseOver;
-  $: complete =
-    task.isDone ||
-    (task.children.length && childrenProgress === task.children.length);
   $: fontStyling = complete ? "text-slate-500" : "";
   $: inputStyling = inputLock ? "cursor-pointer select-none" : "";
   $: itemStyling = inputLock ? "" : "shadow-lg bg-zinc-700";
@@ -65,10 +63,11 @@
 
   function onCheck() {
     if (childrenProgress === task.children.length) return;
-    handleSave({
+    const newData = {
       ...task,
       isDone: !task.isDone,
-    });
+    };
+    handleSave(newData, parentId);
   }
 
   function handleSubmit(event) {
