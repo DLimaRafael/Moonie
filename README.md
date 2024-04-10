@@ -14,9 +14,8 @@ _And that's all it needs!_
 
 ## Known Issues
 
-- No Multiline support
-- Add child task and Delete button require a double click when input was in focus
+- No Multiline support || Not Priority
 
-## Credits
+## External Tools Used
 
 [Flowbite Icons](https://flowbite.com/icons/)

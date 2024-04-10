@@ -54,8 +54,4 @@ button {
   cursor: pointer;
   overflow: hidden;
   position: relative;
-
-  &:hover {
-    filter: brightness(0.9);
-  }
 }

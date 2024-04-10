@@ -9,68 +9,80 @@
     isDone: false,
     children: [],
   };
-  export let handleCheckTask;
-  export let handleEditTask;
-  export let handleDeleteTask;
-  export let handleAddChild;
+  export let handleSave;
+  export let handleDelete;
+  export let handleAddChild = (parentId) => {};
   export let childrenProgress = null;
   export let parentId = "";
 
   let inputLock = true;
-  let btnShow = false;
   let inputValue = task.value;
+  let isMouseOver = false;
 
-  $: complete =
-    task.isDone ||
-    (task.children.length && childrenProgress === task.children.length);
+  $: complete = task.isDone;
+  $: btnShow = !inputLock || isMouseOver;
   $: fontStyling = complete ? "text-slate-500" : "";
   $: inputStyling = inputLock ? "cursor-pointer select-none" : "";
   $: itemStyling = inputLock ? "" : "shadow-lg bg-zinc-700";
-
-  function toggleBtnShow(value = !btnShow) {
-    btnShow = value;
-  }
 
   function toggleLock(value = !inputLock) {
     inputLock = value;
   }
 
-  function toggleCheck(value = !complete) {
-    complete = value;
+  function toggleMouseOver(value = !isMouseOver) {
+    isMouseOver = value;
   }
 
   function handleKey(event) {
     if (event.key === "Escape") handleBlur();
+    if (event.shiftKey && event.key === "Enter") {
+      handleAddChild(parentId || task.id);
+    }
+  }
+
+  function handleFocus(event) {
+    toggleLock(false);
   }
 
   function handleBlur(event) {
-    const value = inputValue.trim() || task.value;
-    inputValue = value;
-
-    if (value !== task.value) {
-      handleEditTask(value, task.id);
+    if (!inputValue) {
+      inputValue = task.value;
+    } else {
+      handleSubmit();
     }
     toggleLock(true);
   }
 
   function onDelete() {
-    handleDeleteTask(task.id, parentId);
+    handleDelete(task.id, parentId);
   }
 
   function onAddChild() {
     handleAddChild(task.id);
   }
 
+  function onCheck() {
+    if (childrenProgress === task.children.length) return;
+    const newData = {
+      ...task,
+      isDone: !task.isDone,
+    };
+    handleSave(newData, parentId);
+  }
+
   function handleSubmit(event) {
-    event.preventDefault();
+    toggleLock(true);
+    event?.preventDefault();
     const value = inputValue.trim();
     if (!value) {
       onDelete();
       return;
     }
     if (value !== task.value) {
-      handleEditTask(value, task.id);
-      toggleLock();
+      handleSave({
+        ...task,
+        value: value,
+      });
     }
   }
 </script>
@@ -78,20 +90,21 @@
 <li>
   <form
     on:submit={handleSubmit}
-    on:mouseenter={() => toggleBtnShow(true)}
-    on:mouseleave={() => toggleBtnShow(false)}
+    on:mouseenter={() => toggleMouseOver(true)}
+    on:mouseleave={() => toggleMouseOver(false)}
     class="flex items-center transition-all rounded-md gap-1 h-10 pl-2 hover:bg-zinc-700 overflow-hidden {itemStyling}"
   >
     <Checkbox
       isChecked={complete}
-      on:click={() => handleCheckTask(task.id)}
+      on:click={onCheck}
       progress={childrenProgress}
       total={task.children.length}
     />
     <input
       class="{fontStyling} {inputStyling} bg-transparent flex-1 border-none"
       bind:value={inputValue}
-      on:focus={() => toggleLock(false)}
+      on:click={handleFocus}
+      on:focus={handleFocus}
       on:blur={handleBlur}
       on:keydown={handleKey}
       readonly={inputLock}
