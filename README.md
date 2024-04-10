@@ -15,8 +15,8 @@ _And that's all it needs!_
 ## Known Issues
 
 - No Multiline support
-- Add child task and Delete button require a double click when input was in focus
+- Checkbox unwanted behavior when checking while task with children all marked
 
-## Credits
+## External Tools Used
 
 [Flowbite Icons](https://flowbite.com/icons/)

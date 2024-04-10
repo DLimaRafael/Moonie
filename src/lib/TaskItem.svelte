@@ -9,10 +9,9 @@
     isDone: false,
     children: [],
   };
-  export let handleCheckTask;
-  export let handleEditTask;
-  export let handleDeleteTask;
-  export let handleAddChild;
+  export let handleSave;
+  export let handleDelete;
+  export let handleAddChild = (parentId) => {};
   export let childrenProgress = null;
   export let parentId = "";
 
@@ -55,11 +54,18 @@
   }
 
   function onDelete() {
-    handleDeleteTask(task.id, parentId);
+    handleDelete(task.id, parentId);
   }
 
   function onAddChild() {
     handleAddChild(task.id);
+  }
+
+  function onCheck() {
+    handleSave({
+      ...task,
+      isDone: !task.isDone,
+    });
   }
 
   function handleSubmit(event) {
@@ -71,7 +77,10 @@
       return;
     }
     if (value !== task.value) {
-      handleEditTask(value, task.id);
+      handleSave({
+        ...task,
+        value: value,
+      });
     }
   }
 </script>
@@ -85,7 +94,7 @@
   >
     <Checkbox
       isChecked={complete}
-      on:click={() => handleCheckTask(task)}
+      on:click={onCheck}
       progress={childrenProgress}
       total={task.children.length}
     />

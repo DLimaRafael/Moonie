@@ -1,33 +1,45 @@
-export const defaultData = JSON.parse(localStorage.getItem("tasks")) ?? [];
+import { taskData } from "../stores/tasks";
+
+let newData = [];
 
 export function saveTask(data, parentId) {
-  let newData = defaultData;
-  const index = defaultData.findIndex((task) => task.id === data.id);
+  taskData.update((tasks) => {
+    const index = tasks.findIndex((task) => task.id === data.id);
+    if (index !== -1) {
+      tasks[index] = data;
+    } else {
+      tasks.push(data);
+    }
 
-  if (index !== -1) {
-    newData[index] = data;
-  } else {
-    newData.push(data);
-  }
+    if (parentId) {
+      const parentTask = tasks.find((task) => task.id === parentId);
+      if (parentTask) {
+        if (!parentTask.children) {
+          parentTask.children = [];
+        }
+        parentTask.children.push(data.id);
+      }
+    }
 
-  if (parentId) {
-    newData.find((task) => task.id === parentId)?.children.push(data.id);
-  }
-
-  localStorage.setItem("tasks", JSON.stringify(newData));
+    return tasks;
+  });
 
   return data;
 }
 
-export function deleteTask(data, parentId) {
-  let newData = defaultData.filter((task) => task.id !== data.id);
+export function deleteTask(id, parentId) {
+  taskData.update((tasks) => {
+    const filteredTasks = tasks.filter((task) => task.id !== id);
 
-  if (parentId) {
-    const parentIndex = newData.findIndex((task) => task.id === parentId);
-    newData[parentIndex].children = newData[parentIndex].children.filter(
-      (child) => child !== data.id
-    );
-  }
+    if (parentId) {
+      const parentTask = tasks.find((task) => task.id === parentId);
+      if (parentTask && parentTask.children) {
+        parentTask.children = parentTask.children.filter(
+          (child) => child !== id
+        );
+      }
+    }
 
-  localStorage.setItem("tasks", JSON.stringify(newData));
+    return filteredTasks;
+  });
 }
