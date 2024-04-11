@@ -13,6 +13,10 @@
   // Task -> id, value, isDone, children
 
   let isSearch = false;
+  let filters = {
+    text: "",
+    tags: [],
+  };
 
   $: tasks = $taskData;
   $: parentTasks = tasks.filter((task) => {
@@ -45,7 +49,14 @@
   }
 
   function handleSearch(value) {
-    isSearch = !isSearch;
+    filters.text = value.toLocaleLowerCase();
+    tasks = filterData($taskData);
+  }
+
+  function filterData(data) {
+    return data.filter((data) =>
+      data.value.toLocaleLowerCase().includes(filters.text)
+    );
   }
 </script>
 

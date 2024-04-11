@@ -9,16 +9,19 @@
   let isSearching = false;
 
   $: formStyling = inputFocus && "shadow-lg";
-  $: searchStyling = isSearching ? "border border-zinc-400" : "bg-zinc-700";
-  $: canSearch = !!taskValue;
+  $: searchStyling = isSearching
+    ? "border border-zinc-400 bg-zinc-700"
+    : "bg-zinc-700";
+
+  $: if (isSearching) onSearch(taskValue);
 
   function toggleFocus() {
     inputFocus = !inputFocus;
   }
 
-  function handleSearch() {
+  function toggleSearch() {
+    if (isSearching) onSearch("");
     isSearching = !isSearching;
-    onSearch(taskValue);
   }
 
   function handleSubmit(event) {
@@ -38,15 +41,17 @@
     bind:value={taskValue}
     on:focus={toggleFocus}
     on:blur={toggleFocus}
-    placeholder="Something to do..."
+    placeholder={isSearching ? "Something to search..." : "Something to do..."}
     class="flex-1 h-full bg-transparent"
   />
-  {#if canSearch}
-    <IconButton on:click={handleSearch} type="button" class="rounded-none">
-      <SearchOutline class="text-zinc-300" />
-    </IconButton>
-  {/if}
-  <IconButton type="submit" class="rounded-none">
+  <IconButton
+    on:click={toggleSearch}
+    type="button"
+    class="rounded-none bg-transparent"
+  >
+    <SearchOutline class="text-zinc-300" />
+  </IconButton>
+  <IconButton type="submit" class="rounded-none bg-transparent">
     <PlusOutline class="text-zinc-300" />
   </IconButton>
 </form>
