@@ -7,6 +7,8 @@ Small App for Task Tracking without any of the extra bells and whistles.
 - [ ] Tauri integration for desktop app (Windows and Linux)
 - [x] Sub Tasks
 - [ ] Tagging and Searching
+  - [ ] Tagging
+  - [x] Searching
 - [ ] Exporting and Importing Tasks
 - [ ] Theme Customization
 
