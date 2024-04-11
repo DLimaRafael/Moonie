@@ -44,22 +44,18 @@
     createTask(newTask, parentId);
   }
 
-  function handleAddChild(id) {
-    handleAddTask("", id);
-  }
-
   function handleSearch(value) {
     isSearch = !isSearch;
   }
 </script>
 
-<div class="m-auto h-full flex flex-col gap-6 p-8 max-w-screen-md">
+<div class="m-auto h-full flex flex-col gap-6 pl-8 pr-8 max-w-screen-md">
   <MainInput onAdd={handleAddTask} onSearch={handleSearch} />
-  <ul class="flex flex-col h-full">
+  <ul class="flex flex-col flex-1 overflow-y-auto">
     {#each parentTasks as task (task.id)}
       <TaskItem
         {task}
-        {handleAddChild}
+        {handleAddTask}
         handleDelete={deleteTask}
         handleSave={saveTask}
         childrenProgress={getTaskProgress(task.id)}
@@ -68,6 +64,7 @@
         <ul class="ml-7">
           <TaskItem
             task={child}
+            {handleAddTask}
             handleDelete={deleteTask}
             handleSave={saveTask}
             parentId={task.id}

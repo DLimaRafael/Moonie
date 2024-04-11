@@ -11,7 +11,7 @@
   };
   export let handleSave;
   export let handleDelete;
-  export let handleAddChild = (parentId) => {};
+  export let handleAddTask;
   export let childrenProgress = null;
   export let parentId = "";
 
@@ -19,9 +19,11 @@
   let inputValue = task.value;
   let isMouseOver = false;
 
+  const hasChildren = !!task.children.length;
+
   $: complete = task.isDone;
   $: btnShow = !inputLock || isMouseOver;
-  $: fontStyling = complete ? "text-slate-500" : "";
+  $: fontStyling = complete ? "text-slate-500" : "text-slate-400";
   $: inputStyling = inputLock ? "cursor-pointer select-none" : "";
   $: itemStyling = inputLock ? "" : "shadow-lg bg-zinc-700";
 
@@ -35,8 +37,11 @@
 
   function handleKey(event) {
     if (event.key === "Escape") handleBlur();
+    if (event.ctrlKey && event.key === "Enter") {
+      handleAddTask("");
+    }
     if (event.shiftKey && event.key === "Enter") {
-      handleAddChild(parentId || task.id);
+      handleAddTask("", parentId || task.id);
     }
   }
 
@@ -58,11 +63,11 @@
   }
 
   function onAddChild() {
-    handleAddChild(task.id);
+    handleAddTask("", task.id);
   }
 
   function onCheck() {
-    if (childrenProgress === task.children.length) return;
+    if (hasChildren && childrenProgress === task.children.length) return;
     const newData = {
       ...task,
       isDone: !task.isDone,
