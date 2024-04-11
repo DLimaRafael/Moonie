@@ -28,6 +28,7 @@
       id: "",
       value: "",
       isDone: "",
+      tags: [],
       children: [],
     };
   }
@@ -54,8 +55,10 @@
   }
 
   function filterData(data) {
-    return data.filter((data) =>
-      data.value.toLocaleLowerCase().includes(filters.text)
+    return data.filter(
+      (data) =>
+        data.value.toLocaleLowerCase().includes(filters.text) &&
+        filters.tags.every((tag) => data.includes(tag))
     );
   }
 </script>
