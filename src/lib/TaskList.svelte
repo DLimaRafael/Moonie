@@ -53,7 +53,7 @@
 
 <div class="m-auto h-full flex flex-col gap-6 pl-8 pr-8 max-w-screen-md">
   <MainInput onAdd={handleAddTask} onSearch={handleSearch} />
-  <ul class="flex flex-col flex-1 overflow-y-auto">
+  <ul class="flex flex-col flex-1 gap-1 overflow-y-auto">
     {#each parentTasks as task (task.id)}
       <TaskItem
         {task}

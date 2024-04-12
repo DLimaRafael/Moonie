@@ -41,6 +41,11 @@
     isMouseOver = value;
   }
 
+  function togglePopover(event) {
+    if (event) event.stopPropagation();
+    showPopover = !showPopover;
+  }
+
   function handleKey(event) {
     if (event.key === "Escape") handleBlur();
     if (event.ctrlKey && event.key === "Enter") {
@@ -98,7 +103,7 @@
   }
 </script>
 
-<li class="relative">
+<li id="{task.id}-item" class="relative">
   <form
     on:submit={handleSubmit}
     on:mouseenter={() => toggleMouseOver(true)}
@@ -128,10 +133,7 @@
             <CheckPlusCircleOutline class="text-zinc-300" />
           </IconButton>
         {/if}
-        <IconButton
-          on:click={() => (showPopover = !showPopover)}
-          class="rounded-none"
-        >
+        <IconButton on:click={togglePopover} class="rounded-none">
           <TagSolid class="text-zinc-300" />
         </IconButton>
         <IconButton on:click={onDelete} class="rounded-none">
@@ -141,6 +143,6 @@
     </div>
   </form>
   {#if showPopover}
-    <TagPopover taskId={task.id} tagList={task.tags} />
+    <TagPopover on:click={togglePopover} taskId={task.id} tagList={task.tags} />
   {/if}
 </li>

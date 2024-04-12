@@ -16,29 +16,27 @@
     const newTag = serializeTag();
     newTag.value = tagValue;
     createTag(newTag);
+    tagValue = "";
   }
 
-  function onCheck(event, tagId) {
-    if (event.target.checked) {
-      assignTag(taskId, tagId);
-    } else {
+  function onCheck(tagId, isAssigned) {
+    if (isAssigned) {
       removeTag(taskId, tagId);
+    } else {
+      assignTag(taskId, tagId);
     }
-  }
-
-  function isTagAssigned(tagId) {
-    return tagList.includes(tagId);
   }
 </script>
 
+<div role="none" on:click class="z-10 top-0 left-0 w-screen h-screen fixed" />
 <div
-  class="absolute z-10 right-4 mt-2 w-52 max-h-40 bg-zinc-700 rounded-md shadow-xl overflow-hidden"
+  class="absolute right-2 mt-2 z-20 min-w-52 max-w-72 bg-zinc-700 rounded-md shadow-xl overflow-hidden"
 >
-  <ul class="flex flex-col p-2 overflow-y-auto">
+  <ul class="flex flex-col p-2 max-h-52 overflow-y-auto">
     {#if sortedTags.length}
       {#each sortedTags as tag (tag.id)}
         <li>
-          <TagItem {tag} checked={isTagAssigned(tag.id)} />
+          <TagItem {tag} {tagList} handleCheck={onCheck} />
         </li>
       {/each}
     {:else}

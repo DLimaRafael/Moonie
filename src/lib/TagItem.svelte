@@ -1,15 +1,20 @@
 <script>
-  export let tag, checked;
+  export let tag, tagList;
+  export let handleCheck;
 
-  $: boxStyling = checked ? "bg-zinc-300" : "bg-inherit border border-zinc-300";
+  $: checked = tagList.includes(tag.id);
+  $: tagStyling = checked
+    ? "font-extrabold text-zinc-300"
+    : "font-regular text-slate-500";
+  $: nameStyling = checked ? "font-bold" : "text-slate-500";
 </script>
 
 <button
-  on:click
-  class="flex items-center gap-2 text-left w-full p-2 rounded-none"
+  on:click={handleCheck(tag.id, checked)}
+  class="flex items-center gap-1 text-left w-full p-2 rounded-none"
 >
-  <div class="w-4 h-4 rounded-sm {boxStyling}" />
-  <p>{tag.value}</p>
+  <p class={tagStyling}>#</p>
+  <p class={nameStyling}>{tag.value}</p>
 </button>
 
 <style>
