@@ -1,7 +1,12 @@
 <script>
-  import { CheckPlusCircleOutline, TrashBinSolid } from "flowbite-svelte-icons";
+  import {
+    CheckPlusCircleOutline,
+    TagSolid,
+    TrashBinSolid,
+  } from "flowbite-svelte-icons";
   import Checkbox from "./Checkbox.svelte";
   import IconButton from "./IconButton.svelte";
+  import TagPopover from "./TagPopover.svelte";
 
   export let task = {
     id: "",
@@ -18,14 +23,15 @@
   let inputLock = true;
   let inputValue = task.value;
   let isMouseOver = false;
+  let showPopover = false;
 
   const hasChildren = !!task.children.length;
 
   $: complete = task.isDone;
-  $: btnShow = !inputLock || isMouseOver;
+  $: btnShow = !inputLock || showPopover || isMouseOver;
   $: fontStyling = complete ? "text-slate-500" : "text-slate-400";
   $: inputStyling = inputLock ? "cursor-pointer select-none" : "";
-  $: itemStyling = inputLock ? "" : "shadow-lg bg-zinc-700";
+  $: itemStyling = inputLock && !showPopover ? "" : "shadow-lg bg-zinc-700";
 
   function toggleLock(value = !inputLock) {
     inputLock = value;
@@ -92,7 +98,7 @@
   }
 </script>
 
-<li>
+<li class="relative">
   <form
     on:submit={handleSubmit}
     on:mouseenter={() => toggleMouseOver(true)}
@@ -122,10 +128,19 @@
             <CheckPlusCircleOutline class="text-zinc-300" />
           </IconButton>
         {/if}
+        <IconButton
+          on:click={() => (showPopover = !showPopover)}
+          class="rounded-none"
+        >
+          <TagSolid class="text-zinc-300" />
+        </IconButton>
         <IconButton on:click={onDelete} class="rounded-none">
           <TrashBinSolid class="text-red-400" />
         </IconButton>
       {/if}
     </div>
   </form>
+  {#if showPopover}
+    <TagPopover taskId={task.id} tagList={task.tags} />
+  {/if}
 </li>

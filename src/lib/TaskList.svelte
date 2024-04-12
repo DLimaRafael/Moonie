@@ -1,12 +1,14 @@
 <script>
   import { taskData } from "../stores/tasks";
+  import { generateUniqueId } from "../utils/dataManager";
   import {
     createTask,
     deleteTask,
     getTaskChildren,
     getTaskProgress,
     saveTask,
-  } from "../utils/dataManager";
+    serializeTask,
+  } from "../utils/taskManager";
   import MainInput from "./MainInput.svelte";
   import TaskItem from "./TaskItem.svelte";
 
@@ -22,20 +24,6 @@
   $: parentTasks = tasks.filter((task) => {
     return !tasks.some((parent) => parent.children.includes(task.id));
   });
-
-  function serializeTask() {
-    return {
-      id: "",
-      value: "",
-      isDone: "",
-      tags: [],
-      children: [],
-    };
-  }
-
-  function generateUniqueId() {
-    return Date.now().toString(36) + Math.random().toString(36).substring(3, 5);
-  }
 
   function handleAddTask(value, parentId = "") {
     isSearch = false;
