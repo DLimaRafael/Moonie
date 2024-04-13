@@ -6,7 +6,6 @@
   } from "flowbite-svelte-icons";
   import Checkbox from "./Checkbox.svelte";
   import IconButton from "./IconButton.svelte";
-  import TagPopover from "./TagPopover.svelte";
 
   export let task = {
     id: "",
@@ -17,21 +16,21 @@
   export let handleSave;
   export let handleDelete;
   export let handleAddTask;
+  export let handlePopover;
   export let childrenProgress = null;
   export let parentId = "";
 
   let inputLock = true;
   let inputValue = task.value;
   let isMouseOver = false;
-  let showPopover = false;
 
   const hasChildren = !!task.children.length;
 
   $: complete = task.isDone;
-  $: btnShow = !inputLock || showPopover || isMouseOver;
+  $: btnShow = !inputLock || isMouseOver;
   $: fontStyling = complete ? "text-slate-500" : "text-slate-400";
   $: inputStyling = inputLock ? "cursor-pointer select-none" : "";
-  $: itemStyling = inputLock && !showPopover ? "" : "shadow-lg bg-zinc-700";
+  $: itemStyling = inputLock ? "" : "shadow-lg bg-zinc-700";
 
   function toggleLock(value = !inputLock) {
     inputLock = value;
@@ -39,11 +38,6 @@
 
   function toggleMouseOver(value = !isMouseOver) {
     isMouseOver = value;
-  }
-
-  function togglePopover(event) {
-    if (event) event.stopPropagation();
-    showPopover = !showPopover;
   }
 
   function handleKey(event) {
@@ -133,7 +127,11 @@
             <CheckPlusCircleOutline class="text-zinc-300" />
           </IconButton>
         {/if}
-        <IconButton on:click={togglePopover} class="rounded-none">
+        <IconButton
+          on:click={() => handlePopover(task)}
+          popovertarget="tag-popover"
+          class="rounded-none"
+        >
           <TagSolid class="text-zinc-300" />
         </IconButton>
         <IconButton on:click={onDelete} class="rounded-none">
@@ -142,7 +140,4 @@
       {/if}
     </div>
   </form>
-  {#if showPopover}
-    <TagPopover on:click={togglePopover} taskId={task.id} tagList={task.tags} />
-  {/if}
 </li>

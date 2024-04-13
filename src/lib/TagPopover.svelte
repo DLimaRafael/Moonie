@@ -8,6 +8,7 @@
   export let tagList = [];
 
   let tagValue = "";
+  let el;
 
   $: sortedTags = $tagData.sort((a, b) => a.value.localeCompare(b.value));
 
@@ -28,9 +29,10 @@
   }
 </script>
 
-<div role="none" on:click class="z-10 top-0 left-0 w-screen h-screen fixed" />
 <div
-  class="absolute right-2 mt-2 z-20 min-w-52 max-w-72 bg-zinc-700 rounded-md shadow-xl overflow-hidden"
+  id="tag-popover"
+  popover="auto"
+  class="min-w-52 max-w-72 bg-zinc-700 rounded-md overflow-hidden drop-shadow-2xl"
 >
   <ul class="flex flex-col p-2 max-h-52 overflow-y-auto">
     {#if sortedTags.length}

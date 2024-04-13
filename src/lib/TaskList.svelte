@@ -10,6 +10,7 @@
     serializeTask,
   } from "../utils/taskManager";
   import MainInput from "./MainInput.svelte";
+  import TagPopover from "./TagPopover.svelte";
   import TaskItem from "./TaskItem.svelte";
 
   // Task -> id, value, isDone, children
@@ -19,11 +20,16 @@
     text: "",
     tags: [],
   };
+  let currentTask = serializeTask();
 
   $: tasks = $taskData;
   $: parentTasks = tasks.filter((task) => {
     return !tasks.some((parent) => parent.children.includes(task.id));
   });
+
+  function handlePopover(task) {
+    currentTask = task;
+  }
 
   function handleAddTask(value, parentId = "") {
     isSearch = false;
@@ -58,6 +64,7 @@
       <TaskItem
         {task}
         {handleAddTask}
+        {handlePopover}
         handleDelete={deleteTask}
         handleSave={saveTask}
         childrenProgress={getTaskProgress(task.id)}
@@ -67,6 +74,7 @@
           <TaskItem
             task={child}
             {handleAddTask}
+            {handlePopover}
             handleDelete={deleteTask}
             handleSave={saveTask}
             parentId={task.id}
@@ -75,4 +83,5 @@
       {/each}
     {/each}
   </ul>
+  <TagPopover taskId={currentTask.id} tagList={currentTask.tags} />
 </div>
