@@ -28,7 +28,7 @@
   id="tag-dialog"
   class="min-w-52 max-w-72 bg-zinc-700 rounded-md overflow-hidden drop-shadow-2xl"
 >
-  <ul class="flex flex-col p-2 max-h-52 overflow-y-auto">
+  <ul class="flex flex-col p-2 max-h-72 overflow-y-auto">
     {#if sortedTags.length}
       {#each sortedTags as tag (tag.id)}
         <li>

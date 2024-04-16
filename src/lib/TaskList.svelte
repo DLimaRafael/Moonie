@@ -28,6 +28,7 @@
   });
 
   function handleDialog(task) {
+    // why won't you just let me type variables, js?????
     const dialog = document.querySelector("#tag-dialog");
     dialogTask.set(task);
     isTagOpen = true;
