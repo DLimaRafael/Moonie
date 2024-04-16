@@ -1,5 +1,5 @@
 <script>
-  import { taskData } from "../stores/tasks";
+  import { dialogTask, taskData } from "../stores/tasks";
   import { generateUniqueId } from "../utils/dataManager";
   import {
     createTask,
@@ -20,15 +20,28 @@
     text: "",
     tags: [],
   };
-  let currentTask = serializeTask();
+  let isTagOpen = false;
 
   $: tasks = $taskData;
   $: parentTasks = tasks.filter((task) => {
     return !tasks.some((parent) => parent.children.includes(task.id));
   });
 
-  function handlePopover(task) {
-    currentTask = task;
+  function handleDialog(task) {
+    const dialog = document.querySelector("#tag-dialog");
+    dialogTask.set(task);
+    isTagOpen = true;
+    // @ts-ignore
+    dialog.showModal();
+
+    dialog.addEventListener("click", (e) => {
+      if (e.target === dialog) {
+        // @ts-ignore
+        dialog.close();
+        isTagOpen = false;
+        dialogTask.set(serializeTask());
+      }
+    });
   }
 
   function handleAddTask(value, parentId = "") {
@@ -64,7 +77,7 @@
       <TaskItem
         {task}
         {handleAddTask}
-        {handlePopover}
+        {handleDialog}
         handleDelete={deleteTask}
         handleSave={saveTask}
         childrenProgress={getTaskProgress(task.id)}
@@ -74,7 +87,7 @@
           <TaskItem
             task={child}
             {handleAddTask}
-            {handlePopover}
+            {handleDialog}
             handleDelete={deleteTask}
             handleSave={saveTask}
             parentId={task.id}
@@ -83,5 +96,5 @@
       {/each}
     {/each}
   </ul>
-  <TagPopover taskId={currentTask.id} tagList={currentTask.tags} />
+  <TagPopover />
 </div>

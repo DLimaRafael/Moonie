@@ -1,11 +1,13 @@
 <script>
   import {
     CheckPlusCircleOutline,
+    RefreshOutline,
     TagSolid,
     TrashBinSolid,
   } from "flowbite-svelte-icons";
   import Checkbox from "./Checkbox.svelte";
   import IconButton from "./IconButton.svelte";
+  import { dialogTask } from "../stores/tasks";
 
   export let task = {
     id: "",
@@ -13,10 +15,10 @@
     isDone: false,
     children: [],
   };
-  export let handleSave;
-  export let handleDelete;
-  export let handleAddTask;
-  export let handlePopover;
+  export let handleSave = (value, parentId) => {};
+  export let handleDelete = (id, parentId) => {};
+  export let handleAddTask = (value, parentId) => {};
+  export let handleDialog = (value) => {};
   export let childrenProgress = null;
   export let parentId = "";
 
@@ -26,11 +28,12 @@
 
   const hasChildren = !!task.children.length;
 
+  $: isTagOpen = $dialogTask.id === task.id;
   $: complete = task.isDone;
-  $: btnShow = !inputLock || isMouseOver;
+  $: btnShow = !inputLock || isMouseOver || isTagOpen;
   $: fontStyling = complete ? "text-slate-500" : "text-slate-400";
   $: inputStyling = inputLock ? "cursor-pointer select-none" : "";
-  $: itemStyling = inputLock ? "" : "shadow-lg bg-zinc-700";
+  $: itemStyling = !inputLock || isTagOpen ? "shadow-lg bg-zinc-700" : "";
 
   function toggleLock(value = !inputLock) {
     inputLock = value;
@@ -127,11 +130,7 @@
             <CheckPlusCircleOutline class="text-zinc-300" />
           </IconButton>
         {/if}
-        <IconButton
-          on:click={() => handlePopover(task)}
-          popovertarget="tag-popover"
-          class="rounded-none"
-        >
+        <IconButton on:click={(e) => handleDialog(task)} class="rounded-none">
           <TagSolid class="text-zinc-300" />
         </IconButton>
         <IconButton on:click={onDelete} class="rounded-none">

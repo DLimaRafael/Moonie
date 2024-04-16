@@ -8,6 +8,7 @@ Small App for Task Tracking without any of the extra bells and whistles.
 - [x] Sub Tasks
 - [ ] Tagging and Searching
   - [ ] Tagging
+    - [ ] Turning the tag dialog into a popover (+ Auto Positioning)
   - [x] Searching
 - [ ] Exporting and Importing Tasks
 - [ ] Theme Customization
