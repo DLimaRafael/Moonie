@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from "svelte";
   import { dialogTask, taskData } from "../stores/tasks";
   import { generateUniqueId } from "../utils/dataManager";
   import {
@@ -20,7 +21,6 @@
     text: "",
     tags: [],
   };
-  let isTagOpen = false;
 
   $: tasks = $taskData;
   $: parentTasks = tasks.filter((task) => {
@@ -28,21 +28,9 @@
   });
 
   function handleDialog(task) {
-    // why won't you just let me type variables, js?????
     const dialog = document.querySelector("#tag-dialog");
     dialogTask.set(task);
-    isTagOpen = true;
-    // @ts-ignore
     dialog.showModal();
-
-    dialog.addEventListener("click", (e) => {
-      if (e.target === dialog) {
-        // @ts-ignore
-        dialog.close();
-        isTagOpen = false;
-        dialogTask.set(serializeTask());
-      }
-    });
   }
 
   function handleAddTask(value, parentId = "") {
