@@ -6,7 +6,7 @@
   import { onMount } from "svelte";
 
   let tagValue = "";
-  let element;
+  let dialog;
 
   $: sortedTags = $tagData.sort((a, b) => a.value.localeCompare(b.value));
 
@@ -27,8 +27,7 @@
   }
 
   onMount(() => {
-    element.addEventListener("click", (event) => {
-      const dialog = document.querySelector("#tag-dialog");
+    dialog.addEventListener("click", (event) => {
       const rect = dialog.getBoundingClientRect();
       const isInDialog =
         rect.top <= event?.clientY &&
@@ -44,12 +43,12 @@
 </script>
 
 <dialog
-  bind:this={element}
+  bind:this={dialog}
   id="tag-dialog"
   class="bg-opacity-50 min-w-52 max-w-72 mt-24 bg-zinc-700 rounded-md overflow-hidden
   drop-shadow-2xl"
 >
-  <ul class="flex flex-col p-2 max-h-72 overflow-y-auto">
+  <ul class="flex flex-col p-3 max-h-72 overflow-y-auto">
     {#if sortedTags.length}
       {#each sortedTags as tag (tag.id)}
         <li>
@@ -57,14 +56,14 @@
         </li>
       {/each}
     {:else}
-      <p class="select-none text-zinc-500">No Tags Here...</p>
+      <p class="m-3 select-none text-zinc-500">No Tags Here...</p>
     {/if}
   </ul>
   <form on:submit={onSubmit}>
-    <hr class="ml-4 mr-4 mt-4 mb-2 border-zinc-600" />
+    <hr class="ml-4 mr-4 mt-4 mb-0 border-zinc-600" />
     <input
       bind:value={tagValue}
-      class="bg-inherit w-full h-10 mb-2"
+      class="bg-inherit h-14 ml-4 mr-4 p-0"
       placeholder="New Tag..."
     />
   </form>
@@ -93,7 +92,7 @@
       opacity: 1;
     }
     to {
-      transform: translateY(20%);
+      transform: translateY(-10%);
       opacity: 0;
     }
   }

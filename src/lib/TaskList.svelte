@@ -13,14 +13,12 @@
   import MainInput from "./MainInput.svelte";
   import TagPopover from "./TagPopover.svelte";
   import TaskItem from "./TaskItem.svelte";
+  import FilterPopover from "./FilterPopover.svelte";
+  import { taskFilters } from "../stores/filters";
 
   // Task -> id, value, isDone, children
 
   let isSearch = false;
-  let filters = {
-    text: "",
-    tags: [],
-  };
 
   $: tasks = $taskData;
   $: parentTasks = tasks.filter((task) => {
@@ -28,7 +26,7 @@
   });
 
   function handleDialog(task) {
-    const dialog = document.querySelector("#tag-dialog");
+    const dialog = document.querySelector("dialog");
     dialogTask.set(task);
     dialog.showModal();
   }
@@ -46,18 +44,18 @@
   }
 
   function handleSearch(value) {
-    filters.text = value.toLocaleLowerCase();
     tasks = filterData($taskData);
   }
 
   function filterData(data) {
     return data.filter(
-      (data) =>
-        data.value.toLocaleLowerCase().includes(filters.text) &&
-        filters.tags.every((tag) => data.includes(tag))
+      (task) =>
+        task.value.toLocaleLowerCase().includes($taskFilters.text) &&
+        $taskFilters.tags.every((tag) => task.tags.includes(tag))
     );
   }
 </script>
+
 
 <div class="m-auto h-full flex flex-col gap-6 pl-8 pr-8 max-w-screen-md">
   <MainInput onAdd={handleAddTask} onSearch={handleSearch} />
@@ -85,5 +83,6 @@
       {/each}
     {/each}
   </ul>
+  <FilterPopover />
   <TagPopover />
 </div>

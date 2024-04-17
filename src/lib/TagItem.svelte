@@ -1,6 +1,6 @@
 <script>
   export let tag, tagList;
-  export let handleCheck;
+  export let handleCheck = (tagId, isAssigned) => {};
 
   $: checked = tagList.includes(tag.id);
   $: tagStyling = checked
@@ -10,7 +10,7 @@
 </script>
 
 <button
-  on:click={handleCheck(tag.id, checked)}
+  on:click={() => handleCheck(tag.id, checked)}
   class="flex items-center gap-1 text-left w-full p-2 rounded-md bg-inherit"
 >
   <span class="{tagStyling} p-1 w-6 rounded-md text-center">#</span>
