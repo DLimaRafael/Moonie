@@ -46,7 +46,7 @@
 <dialog
   bind:this={element}
   id="tag-dialog"
-  class="bg-opacity-50 min-w-52 max-w-72 mt-20 bg-zinc-700 rounded-md overflow-hidden
+  class="bg-opacity-50 min-w-52 max-w-72 mt-24 bg-zinc-700 rounded-md overflow-hidden
   drop-shadow-2xl"
 >
   <ul class="flex flex-col p-2 max-h-72 overflow-y-auto">
