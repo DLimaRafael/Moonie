@@ -1,7 +1,6 @@
 <script>
   import {
     CheckPlusCircleOutline,
-    RefreshOutline,
     TagSolid,
     TrashBinSolid,
   } from "flowbite-svelte-icons";
@@ -34,6 +33,7 @@
   $: fontStyling = complete ? "text-slate-500" : "text-slate-400";
   $: inputStyling = inputLock ? "cursor-pointer select-none" : "";
   $: itemStyling = !inputLock || isTagOpen ? "shadow-lg bg-zinc-700" : "";
+  $: btnDivStyling = btnShow ? "opacity-100" : "opacity-0";
 
   function toggleLock(value = !inputLock) {
     inputLock = value;
@@ -100,12 +100,15 @@
   }
 </script>
 
-<li id="{task.id}-item" class="relative">
+<li
+  id="{task.id}-item"
+  class="rounded-md hover:bg-zinc-700 transition-all overflow-hidden {itemStyling}"
+>
   <form
     on:submit={handleSubmit}
     on:mouseenter={() => toggleMouseOver(true)}
     on:mouseleave={() => toggleMouseOver(false)}
-    class="flex items-center transition-all rounded-md gap-1 h-10 pl-2 hover:bg-zinc-700 overflow-hidden {itemStyling}"
+    class="flex items-center gap-1 h-10 pl-2"
   >
     <Checkbox
       isChecked={complete}
@@ -123,10 +126,10 @@
       readonly={inputLock}
       placeholder={task.value || "..."}
     />
-    <div class="h-full flex">
+    <div class="h-full flex {btnDivStyling} transition-opacity">
       {#if btnShow}
         {#if !parentId}
-          <IconButton on:click={onAddChild} class="rounded-none p-20">
+          <IconButton on:click={onAddChild} class="rounded-none">
             <CheckPlusCircleOutline class="text-zinc-300" />
           </IconButton>
         {/if}

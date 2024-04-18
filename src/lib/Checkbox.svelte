@@ -8,7 +8,7 @@
   $: background = isChecked ? "bg-zinc-400" : "bg-transparent";
   $: iconBackground = isChecked ? "text-zinc-800" : "text-transparent";
   $: fontBackground = isChecked ? "text-zinc-800" : "text-zinc-400";
-  $: size = total ? "w-8 h-6" : "w-6 h-6";
+  $: size = total ? "min-w-8 h-6" : "w-6 h-6";
 </script>
 
 <button
@@ -19,6 +19,6 @@
   {#if !total}
     <CheckOutline class={iconBackground} />
   {:else}
-    <span class="text-xs {fontBackground}">{progress}/{total}</span>
+    <span class="text-xs p-1 {fontBackground}">{progress}/{total}</span>
   {/if}
 </button>

@@ -6,9 +6,10 @@
   } from "flowbite-svelte-icons";
   import IconButton from "./IconButton.svelte";
   import { taskFilters } from "../stores/filters";
+  import { getFilterTagNames } from "../utils/filterManager";
 
   export let onAdd = (value) => {};
-  export let onSearch = (value) => {};
+  export let onSearch = () => {};
   let taskValue = "";
   let inputFocus = false;
   let isSearching = false;
@@ -16,22 +17,31 @@
   $: formStyling = inputFocus && "shadow-lg";
   $: searchStyling = isSearching
     ? "border border-zinc-400 bg-zinc-700"
-    : "bg-zinc-700";
+    : "border border-transparent bg-zinc-700";
   $: filterStyling = $taskFilters.tags.length ? "bg-zinc-400" : "bg-zinc-700";
   $: filterIconStyling = $taskFilters.tags.length
     ? "text-zinc-700"
     : "text-zinc-300";
 
-  $: if (isSearching) onSearch(taskValue);
-  $: $taskFilters.tags && onSearch(taskValue)
+  $: if (isSearching) {
+    taskFilters.update((value) => {
+      return { text: taskValue, tags: value.tags };
+    });
+  }
+  $: $taskFilters.tags, onSearch();
 
   function toggleFocus() {
     inputFocus = !inputFocus;
   }
 
   function toggleSearch() {
-    if (isSearching) onSearch("");
     isSearching = !isSearching;
+    if (!isSearching) {
+      taskFilters.update((value) => {
+        return { text: "", tags: value.tags };
+      });
+    }
+    onSearch();
   }
 
   function handleSubmit(event) {
@@ -43,16 +53,18 @@
   }
 </script>
 
-<div class="flex gap-2 h-12">
+<div id="main-input-div" class="flex gap-2 h-12">
   <form
     on:submit={handleSubmit}
-    class="flex w-11/12 h-full ml-auto mr-auto rounded-md overflow-hidden transition-allx {formStyling} {searchStyling}"
+    class="flex w-11/12 h-full ml-auto mr-auto rounded-md overflow-hidden transition-all {formStyling} {searchStyling}"
   >
     <input
       bind:value={taskValue}
       on:focus={toggleFocus}
       on:blur={toggleFocus}
-      placeholder={isSearching ? "Task #Tag" : "Something to do..."}
+      placeholder={isSearching
+        ? "Something to search..."
+        : "Something to do..."}
       class="flex-1 h-full bg-transparent"
     />
     <IconButton
@@ -67,6 +79,7 @@
     </IconButton>
   </form>
   <IconButton
+    type="button"
     id="filter-button"
     popovertarget="filter-popover"
     class="rounded-md {filterStyling} flex w-14 items-center"
@@ -75,3 +88,12 @@
     <span class="w-5 {filterIconStyling}">{$taskFilters.tags.length}</span>
   </IconButton>
 </div>
+{#if $taskFilters.tags.length}
+  <div id="search-tags-div" class="flex gap-1 h-fit mt-2">
+    {#each getFilterTagNames($taskFilters.tags) as tag (tag.id)}
+      <span class="bg-zinc-700 h-fit pl-2 pr-2 rounded-sm text-xs flex-wrap">
+        {tag.value}
+      </span>
+    {/each}
+  </div>
+{/if}

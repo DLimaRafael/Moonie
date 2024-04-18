@@ -17,7 +17,6 @@
     if (filterBtn) {
       const btnRect = filterBtn.getBoundingClientRect();
       const elementRect = element.getBoundingClientRect();
-      console.log(elementRect);
       position.top = `${btnRect.y + btnRect.height + 12}px`;
       position.left = `${btnRect.x + btnRect.width - 288}px`;
     }
