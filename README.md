@@ -9,7 +9,10 @@ Small App for Task Tracking without any of the extra bells and whistles.
 - [ ] Tagging and Searching
   - [ ] Tagging
     - [ ] Turning the tag dialog into a popover (+ Auto Positioning)
+    - [ ] Editing and Deleting Tags
   - [x] Searching
+    - [x] Filter by Text
+    - [x] Filter by Tags
 - [ ] Exporting and Importing Tasks
 - [ ] Theme Customization
 
