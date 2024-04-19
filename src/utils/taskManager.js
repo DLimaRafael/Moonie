@@ -110,11 +110,14 @@ export function assignTag(taskId, tagId) {
   });
 }
 
-export function removeTag(taskId, tagId) {
+export function removeTag(taskIds, tagId) {
   taskData.update((tasks) => {
-    const task = tasks.find((task) => task.id === taskId);
-
-    task.tags = task.tags.filter((tag) => tag !== tagId);
+    taskIds.forEach((taskId) => {
+      const task = tasks.find((task) => task.id === taskId);
+      if (task) {
+        task.tags = task.tags.filter((tag) => tag !== tagId);
+      }
+    });
 
     return tasks;
   });

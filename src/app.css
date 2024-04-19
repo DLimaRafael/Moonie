@@ -30,6 +30,11 @@ h1 {
   line-height: 1.1;
 }
 
+h2 {
+  font-size: 1.6em;
+  line-height: 1.1;
+}
+
 h1,
 h2,
 h3 {
@@ -54,4 +59,8 @@ button {
   cursor: pointer;
   overflow: hidden;
   position: relative;
+
+  &:hover {
+    filter: brightness(0.9);
+  }
 }

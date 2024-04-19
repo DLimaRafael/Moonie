@@ -1,6 +1,8 @@
 import { get } from "svelte/store";
-import { tagData } from "../stores/tasks";
+import { tagData, taskData } from "../stores/tasks";
 import { generateUniqueId } from "./dataManager";
+import { removeTag } from "./taskManager";
+import { taskFilters } from "../stores/filters";
 
 export function serializeTag() {
   return {
@@ -28,12 +30,24 @@ export function saveTag(data) {
 }
 
 export function deleteTag(id) {
+  // get all tasks with this tag
+  const tasksToUpdate = get(taskData)
+    .filter((task) => task.tags.includes(id))
+    .map((task) => task.id);
+  removeTag(tasksToUpdate, id);
   tagData.update((tags) => {
     const tagMap = new Map(tags.map((tag) => [tag.id, tag]));
 
     tagMap.delete(id);
 
     return Array.from(tagMap.values());
+  });
+  // Remove tag from filter
+  taskFilters.update((value) => {
+    return {
+      text: value.text,
+      tags: value.tags.filter((tag) => tag !== id),
+    };
   });
 }
 

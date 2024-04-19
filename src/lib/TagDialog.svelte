@@ -1,12 +1,15 @@
 <script>
-  import { createTag, serializeTag } from "../utils/tagManager";
+  import { createTag, deleteTag, serializeTag } from "../utils/tagManager";
   import { dialogTask, tagData } from "../stores/tasks";
   import { assignTag, removeTag, serializeTask } from "../utils/taskManager";
   import TagItem from "./TagItem.svelte";
   import { onMount } from "svelte";
+  import ConfirmDialog from "./ConfirmDialog.svelte";
 
   let tagValue = "";
   let dialog;
+
+  let confirmDialog, confirmMsg, confirmTitle, confirmTag;
 
   $: sortedTags = $tagData.sort((a, b) => a.value.localeCompare(b.value));
 
@@ -20,10 +23,28 @@
 
   function onCheck(tagId, isAssigned) {
     if (isAssigned) {
-      removeTag($dialogTask.id, tagId);
+      removeTag([$dialogTask.id], tagId);
     } else {
       assignTag($dialogTask.id, tagId);
     }
+  }
+
+  function onDelete(tag) {
+    confirmDialog = document.querySelector("dialog#confirm-dialog");
+    confirmTitle = "Delete Tag";
+    confirmMsg = `The tag "${tag.value}" will be removed from all the tasks assigned, are you sure?`;
+    confirmTag = tag;
+    // @ts-ignore
+    confirmDialog.showModal();
+  }
+
+  function onCloseConfirm() {
+    confirmDialog.close();
+  }
+
+  function onDeleteConfirm() {
+    deleteTag(confirmTag.id);
+    confirmDialog.close();
   }
 
   onMount(() => {
@@ -52,7 +73,13 @@
     {#if sortedTags.length}
       {#each sortedTags as tag (tag.id)}
         <li>
-          <TagItem {tag} tagList={$dialogTask.tags} handleCheck={onCheck} />
+          <TagItem
+            {tag}
+            tagList={$dialogTask.tags}
+            handleCheck={onCheck}
+            handleDelete={onDelete}
+            canDelete
+          />
         </li>
       {/each}
     {:else}
@@ -68,6 +95,12 @@
     />
   </form>
 </dialog>
+<ConfirmDialog
+  title={confirmTitle}
+  msg={confirmMsg}
+  onClose={onCloseConfirm}
+  onConfirm={onDeleteConfirm}
+/>
 
 <style>
   dialog[open] {

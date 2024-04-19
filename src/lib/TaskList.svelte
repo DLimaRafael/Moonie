@@ -10,14 +10,14 @@
     serializeTask,
   } from "../utils/taskManager";
   import MainInput from "./MainInput.svelte";
-  import TagPopover from "./TagPopover.svelte";
+  import TagDialog from "./TagDialog.svelte";
   import TaskItem from "./TaskItem.svelte";
   import FilterPopover from "./FilterPopover.svelte";
   import { filterData } from "../utils/filterManager";
 
   // Task -> id, value, isDone, children
 
-  $: tasks = $taskData;
+  $: tasks = filterData($taskData);
   $: parentTasks = tasks.filter((task) => {
     return !tasks.some((parent) => parent.children.includes(task.id));
   });
@@ -71,5 +71,5 @@
     {/each}
   </ul>
   <FilterPopover />
-  <TagPopover />
+  <TagDialog />
 </div>
