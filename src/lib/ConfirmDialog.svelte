@@ -25,5 +25,6 @@
 <style>
   dialog {
     backdrop-filter: blur(5px);
+    max-width: 500px;
   }
 </style>
