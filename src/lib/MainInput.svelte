@@ -89,9 +89,11 @@
   </IconButton>
 </div>
 {#if $taskFilters.tags.length}
-  <div id="search-tags-div" class="flex gap-1 h-fit mt-2">
+  <div id="search-tags-div" class="w-full flex flex-wrap gap-1 h-fit mt-2">
     {#each getFilterTagNames($taskFilters.tags) as tag (tag.id)}
-      <span class="bg-zinc-700 h-fit pl-2 pr-2 rounded-sm text-xs flex-wrap">
+      <span
+        class="select-none bg-zinc-700 h-fit pl-2 pr-2 rounded-sm text-xs flex-wrap"
+      >
         {tag.value}
       </span>
     {/each}
