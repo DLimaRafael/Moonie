@@ -1,9 +1,12 @@
 <script>
+  import { onMount } from "svelte";
+
   export let onConfirm = (newData) => {};
   export let onClose = () => {};
   export let tag;
 
   let value = tag?.value;
+  let dialog;
 
   function onSubmit(e) {
     e.preventDefault();
@@ -13,9 +16,24 @@
       value: value,
     });
   }
+
+  onMount(() => {
+    dialog.addEventListener("click", (event) => {
+      const rect = dialog.getBoundingClientRect();
+      const isInDialog =
+        rect.top <= event?.clientY &&
+        event?.clientY <= rect.top + rect.height &&
+        rect.left <= event?.clientX &&
+        event?.clientX <= rect.left + rect.width;
+      if (!isInDialog) {
+        onClose();
+      }
+    });
+  });
 </script>
 
 <dialog
+  bind:this={dialog}
   id="edit-tag-dialog"
   class="w-5/12 bg-zinc-700 bg-opacity-50 shadow-2xl text-center p-8 rounded-md"
   on:close={onClose}
