@@ -10,7 +10,10 @@
 
   function onSubmit(e) {
     e.preventDefault();
-    if (!value || value === tag.value) onClose();
+    if (!value || value === tag.value) {
+      onClose();
+      return;
+    }
     onConfirm({
       ...tag,
       value: value,
