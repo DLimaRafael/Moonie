@@ -15,8 +15,9 @@
   let tagValue = "";
   let dialog;
 
-  let confirmDialog, confirmMsg, confirmTitle, targetTag, editDialog;
+  let confirmDialog, confirmMsg, confirmTitle, editDialog;
 
+  $: targetTag = undefined;
   $: sortedTags = $tagData.sort((a, b) => a.value.localeCompare(b.value));
 
   function onSubmit(event) {
@@ -54,7 +55,7 @@
 
   function onCloseConfirm() {
     confirmDialog.close();
-    targetTag = null;
+    targetTag = serializeTag();
   }
 
   function onDeleteConfirm() {
@@ -64,7 +65,7 @@
 
   function onCloseEdit() {
     editDialog.close();
-    targetTag = null;
+    targetTag = serializeTag();
   }
 
   function onConfirmEdit(newData) {

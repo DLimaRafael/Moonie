@@ -1,22 +1,24 @@
 <script>
   import { onMount } from "svelte";
+  import { serializeTag } from "../utils/tagManager";
 
   export let onConfirm = (newData) => {};
   export let onClose = () => {};
-  export let tag;
+  export let tag = serializeTag();
 
-  let value = "";
   let dialog;
+  $: tagValue = tag.value;
 
   function onSubmit(e) {
     e.preventDefault();
-    if (!value || value === tag.value) {
+    const newValue = tagValue.trim();
+    if (!newValue || newValue === tag.value) {
       onClose();
       return;
     }
     onConfirm({
       ...tag,
-      value: value,
+      value: newValue,
     });
   }
 
@@ -39,18 +41,18 @@
   bind:this={dialog}
   id="edit-tag-dialog"
   class=" bg-zinc-700 bg-opacity-50 shadow-2xl text-center p-8 rounded-md"
-  on:close={onClose}
 >
   <div class="flex flex-col gap-8 text-zinc-300">
     <h2>Tag Editing</h2>
-    <h3>Type a new name for {tag?.value}</h3>
+    <h3>Type a new name for {tag.value}</h3>
   </div>
   <form class="mt-4" on:submit={onSubmit}>
     <input
-      bind:value
+      on:input={(e) => (tagValue = e.currentTarget.value)}
       class="bg-zinc-800 bg-opacity-50 rounded-md border border-zinc-600"
       type="text"
-      placeholder={tag?.value}
+      placeholder={tag.value}
+      value={tag.value}
     />
   </form>
 </dialog>
