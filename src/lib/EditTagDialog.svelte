@@ -5,8 +5,9 @@
   export let onClose = () => {};
   export let tag;
 
-  let value = "";
   let dialog;
+
+  $: value = tag?.value;
 
   function onSubmit(e) {
     e.preventDefault();
@@ -47,10 +48,10 @@
   </div>
   <form class="mt-4" on:submit={onSubmit}>
     <input
-      bind:value
       class="bg-zinc-800 bg-opacity-50 rounded-md border border-zinc-600"
       type="text"
       placeholder={tag?.value}
+      {value}
     />
   </form>
 </dialog>
