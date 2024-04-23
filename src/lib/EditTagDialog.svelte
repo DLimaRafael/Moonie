@@ -35,7 +35,7 @@
 <dialog
   bind:this={dialog}
   id="edit-tag-dialog"
-  class="w-5/12 bg-zinc-700 bg-opacity-50 shadow-2xl text-center p-8 rounded-md"
+  class=" bg-zinc-700 bg-opacity-50 shadow-2xl text-center p-8 rounded-md"
   on:close={onClose}
 >
   <div class="flex flex-col gap-8 text-zinc-300">
