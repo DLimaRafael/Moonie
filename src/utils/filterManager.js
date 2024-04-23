@@ -40,3 +40,12 @@ export function getFilterTagNames(ids) {
   const filtered = tags.filter((tag) => ids.includes(tag.id));
   return filtered;
 }
+
+export function clearTagFilters() {
+  taskFilters.update((value) => {
+    return {
+      text: value.text,
+      tags: [],
+    };
+  });
+}
