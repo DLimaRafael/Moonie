@@ -1,12 +1,13 @@
 <script>
-  import { TrashBinSolid } from "flowbite-svelte-icons";
+  import { EditSolid, TrashBinSolid } from "flowbite-svelte-icons";
   import IconButton from "./IconButton.svelte";
-  import { deleteTag } from "../utils/tagManager";
 
   export let tag, tagList;
   export let canDelete = false;
+  export let canEdit = false;
   export let handleCheck = (tagId, isAssigned) => {};
   export let handleDelete = (tag) => {};
+  export let handleEdit = (tag) => {};
 
   let showBtn;
 
@@ -25,25 +26,37 @@
   role="region"
   on:mouseenter={() => toggleBtn(true)}
   on:mouseleave={() => toggleBtn(false)}
-  class="flex gap-1"
+  class="tag-item-container flex gap-1 rounded-md justify-start items-center"
 >
   <button
     on:click={() => handleCheck(tag.id, checked)}
-    class="flex items-center gap-1 text-left w-full p-2 rounded-md bg-inherit"
+    class="flex flex-1 gap-2 text-left items-center p-2 bg-transparent"
   >
     <span class="{tagStyling} p-1 w-6 rounded-md text-center">#</span>
-    <p class={nameStyling}>{tag.value}</p>
+    <p
+      class="select-none {nameStyling} overflow-hidden text-ellipsis text-nowrap"
+    >
+      {tag.value}
+    </p>
   </button>
-  {#if showBtn && canDelete}
-    <IconButton on:click={() => handleDelete(tag)} class="bg-inherit">
-      <TrashBinSolid class="text-red-400" />
-    </IconButton>
-  {/if}
+  <div>
+    {#if showBtn}
+      {#if canEdit}
+        <IconButton on:click={() => handleEdit(tag)} class="bg-transparent">
+          <EditSolid class="text-zinc-400" />
+        </IconButton>
+      {/if}
+      {#if canDelete}
+        <IconButton on:click={() => handleDelete(tag)} class="bg-transparent">
+          <TrashBinSolid class="text-red-400" />
+        </IconButton>
+      {/if}
+    {/if}
+  </div>
 </div>
 
 <style>
-  button:hover {
+  .tag-item-container:hover {
     background-color: rgba(255, 255, 255, 0.05);
-    filter: brightness(1.2);
   }
 </style>

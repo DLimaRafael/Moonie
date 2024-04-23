@@ -1,20 +1,27 @@
 <script>
-  import { createTag, deleteTag, serializeTag } from "../utils/tagManager";
+  import {
+    createTag,
+    deleteTag,
+    saveTag,
+    serializeTag,
+  } from "../utils/tagManager";
   import { dialogTask, tagData } from "../stores/tasks";
   import { assignTag, removeTag, serializeTask } from "../utils/taskManager";
   import TagItem from "./TagItem.svelte";
   import { onMount } from "svelte";
   import ConfirmDialog from "./ConfirmDialog.svelte";
+  import EditTagDialog from "./EditTagDialog.svelte";
 
   let tagValue = "";
   let dialog;
 
-  let confirmDialog, confirmMsg, confirmTitle, confirmTag;
+  let confirmDialog, confirmMsg, confirmTitle, targetTag, editDialog;
 
   $: sortedTags = $tagData.sort((a, b) => a.value.localeCompare(b.value));
 
   function onSubmit(event) {
     event.preventDefault();
+    if (!tagValue) return;
     const newTag = serializeTag();
     newTag.value = tagValue;
     createTag(newTag);
@@ -33,18 +40,36 @@
     confirmDialog = document.querySelector("dialog#confirm-dialog");
     confirmTitle = "Delete Tag";
     confirmMsg = `The tag "${tag.value}" will be removed from all the tasks assigned, are you sure?`;
-    confirmTag = tag;
+    targetTag = tag;
     // @ts-ignore
     confirmDialog.showModal();
   }
 
+  function onEdit(tag) {
+    editDialog = document.querySelector("dialog#edit-tag-dialog");
+    targetTag = tag;
+    // @ts-ignore
+    editDialog.showModal();
+  }
+
   function onCloseConfirm() {
     confirmDialog.close();
+    targetTag = null;
   }
 
   function onDeleteConfirm() {
-    deleteTag(confirmTag.id);
-    confirmDialog.close();
+    deleteTag(targetTag.id);
+    onCloseConfirm();
+  }
+
+  function onCloseEdit() {
+    editDialog.close();
+    targetTag = null;
+  }
+
+  function onConfirmEdit(newData) {
+    saveTag(newData);
+    onCloseEdit();
   }
 
   onMount(() => {
@@ -66,10 +91,10 @@
 <dialog
   bind:this={dialog}
   id="tag-dialog"
-  class="bg-opacity-50 min-w-52 max-w-72 mt-24 bg-zinc-700 rounded-md overflow-hidden
+  class="bg-opacity-50 min-w-52 w-80 mt-24 bg-zinc-700 rounded-md overflow-hidden
   drop-shadow-2xl"
 >
-  <ul class="flex flex-col p-3 max-h-72 overflow-y-auto">
+  <ul class="flex flex-col p-3 h-5/6 overflow-y-auto">
     {#if sortedTags.length}
       {#each sortedTags as tag (tag.id)}
         <li>
@@ -78,7 +103,9 @@
             tagList={$dialogTask.tags}
             handleCheck={onCheck}
             handleDelete={onDelete}
+            handleEdit={onEdit}
             canDelete
+            canEdit
           />
         </li>
       {/each}
@@ -100,6 +127,11 @@
   msg={confirmMsg}
   onClose={onCloseConfirm}
   onConfirm={onDeleteConfirm}
+/>
+<EditTagDialog
+  tag={targetTag}
+  onClose={onCloseEdit}
+  onConfirm={onConfirmEdit}
 />
 
 <style>
