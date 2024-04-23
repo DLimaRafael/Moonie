@@ -5,7 +5,7 @@
   export let onClose = () => {};
   export let tag;
 
-  let value = tag?.value;
+  let value = "";
   let dialog;
 
   function onSubmit(e) {
