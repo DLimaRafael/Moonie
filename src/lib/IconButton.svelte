@@ -4,6 +4,9 @@
 
 <style>
   button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 0.5rem;
     min-width: 2.5rem;
     transition: background-color 200ms;

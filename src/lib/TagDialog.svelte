@@ -92,10 +92,10 @@
 <dialog
   bind:this={dialog}
   id="tag-dialog"
-  class="bg-opacity-50 min-w-52 w-80 mt-24 bg-zinc-700 rounded-md overflow-hidden
+  class="bg-opacity-50 min-w-52 w-80 mt-24 min-h-fit bg-zinc-700 rounded-md
   drop-shadow-2xl"
 >
-  <ul class="flex flex-col p-3 h-5/6 overflow-y-auto">
+  <ul class="flex flex-col p-3 max-h-60 overflow-y-auto">
     {#if sortedTags.length}
       {#each sortedTags as tag (tag.id)}
         <li>
@@ -118,7 +118,7 @@
     <hr class="ml-4 mr-4 mt-4 mb-0 border-zinc-600" />
     <input
       bind:value={tagValue}
-      class="bg-inherit h-14 ml-4 mr-4 p-0"
+      class="bg-transparent h-14 ml-4 mr-4 p-0"
       placeholder="New Tag..."
     />
   </form>
@@ -136,6 +136,12 @@
 />
 
 <style>
+  @media (max-height: 500px) {
+    dialog {
+      margin: auto;
+      max-height: 90vh;
+    }
+  }
   dialog[open] {
     backdrop-filter: blur(5px);
     animation: show 150ms ease-out normal;

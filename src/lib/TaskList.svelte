@@ -44,32 +44,34 @@
   }
 </script>
 
-<div class="m-auto h-full flex flex-col pl-8 pr-8 max-w-screen-md">
+<div class="list-container m-auto h-full flex flex-col max-w-screen-md">
   <MainInput onAdd={handleAddTask} onSearch={handleSearch} />
-  <ul class="flex flex-col flex-1 gap-1 overflow-y-auto mt-4">
-    {#each parentTasks as task (task.id)}
-      <TaskItem
-        {task}
-        {handleAddTask}
-        {handleDialog}
-        handleDelete={deleteTask}
-        handleSave={saveTask}
-        childrenProgress={getTaskProgress(task.id)}
-      />
-      {#each getTaskChildren(task.id) as child (child.id)}
-        <ul class="ml-7">
-          <TaskItem
-            task={child}
-            {handleAddTask}
-            {handleDialog}
-            handleDelete={deleteTask}
-            handleSave={saveTask}
-            parentId={task.id}
-          />
-        </ul>
+  <div class="h-full overflow-y-auto mt-4">
+    <ul class="flex flex-col flex-1 gap-1">
+      {#each parentTasks as task (task.id)}
+        <TaskItem
+          {task}
+          {handleAddTask}
+          {handleDialog}
+          handleDelete={deleteTask}
+          handleSave={saveTask}
+          childrenProgress={getTaskProgress(task.id)}
+        />
+        {#each getTaskChildren(task.id) as child (child.id)}
+          <ul class="ml-7">
+            <TaskItem
+              task={child}
+              {handleAddTask}
+              {handleDialog}
+              handleDelete={deleteTask}
+              handleSave={saveTask}
+              parentId={task.id}
+            />
+          </ul>
+        {/each}
       {/each}
-    {/each}
-  </ul>
+    </ul>
+  </div>
   <FilterPopover />
   <TagDialog />
 </div>
