@@ -10,7 +10,7 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
+  color: theme("colors.zinc.300");
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -49,6 +49,10 @@ input:focus {
   outline: none;
 }
 
+dialog {
+  color: inherit;
+}
+
 button {
   padding: 0.6em 1.2em;
   border-radius: 4px;
@@ -60,11 +64,11 @@ button {
   overflow: hidden;
   position: relative;
 
-  &:hover {
-    filter: brightness(0.9);
-  }
-
   &:disabled {
     opacity: 0.5;
+  }
+
+  &:focus {
+    outline: none;
   }
 }

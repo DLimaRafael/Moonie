@@ -13,9 +13,9 @@
 
   $: checked = tagList.includes(tag.id);
   $: tagStyling = checked
-    ? "font-extrabold text-zinc-300 bg-zinc-300 text-zinc-700"
-    : "font-regular text-slate-500 bg-zinc-700";
-  $: nameStyling = checked ? "font-bold" : "text-slate-500";
+    ? "text-zinc-300 bg-zinc-300 text-zinc-700"
+    : "text-slate-500 bg-zinc-700";
+  $: nameStyling = checked ? "font-bold text-slate-300" : "text-slate-500";
 
   function toggleBtn(value = !showBtn) {
     showBtn = value;
