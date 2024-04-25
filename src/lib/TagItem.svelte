@@ -39,7 +39,7 @@
       {tag.value}
     </p>
   </button>
-  <div>
+  <div class="flex">
     {#if showBtn}
       {#if canEdit}
         <IconButton on:click={() => handleEdit(tag)} class="bg-transparent">

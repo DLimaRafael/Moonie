@@ -4,7 +4,7 @@
     "beforeBuildCommand": "npm run build",
     "beforeDevCommand": "npm run dev",
     "devPath": "http://localhost:5173",
-    "distDir": "../build"
+    "distDir": "../dist"
   },
   "package": {
     "productName": "moonie",
@@ -29,7 +29,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "rdlima.tauri.moonie",
       "longDescription": "",
       "macOS": {
         "entitlements": null,
@@ -56,10 +56,12 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
+        "height": 800,
         "resizable": true,
         "title": "Moonie ToDo",
-        "width": 800
+        "width": 600,
+        "minWidth": 520,
+        "minHeight": 400
       }
     ]
   }

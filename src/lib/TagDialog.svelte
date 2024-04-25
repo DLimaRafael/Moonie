@@ -92,10 +92,10 @@
 <dialog
   bind:this={dialog}
   id="tag-dialog"
-  class="bg-opacity-50 min-w-52 w-80 mt-24 h-fit bg-zinc-700 rounded-md overflow-hidden
+  class="bg-opacity-50 min-w-52 w-80 mt-24 min-h-fit bg-zinc-700 rounded-md
   drop-shadow-2xl"
 >
-  <ul class="flex flex-col p-3 h-fit max-h-60 overflow-y-auto">
+  <ul class="flex flex-col p-3 max-h-60 overflow-y-auto">
     {#if sortedTags.length}
       {#each sortedTags as tag (tag.id)}
         <li>
@@ -136,6 +136,12 @@
 />
 
 <style>
+  @media (max-height: 500px) {
+    dialog {
+      margin: auto;
+      max-height: 90vh;
+    }
+  }
   dialog[open] {
     backdrop-filter: blur(5px);
     animation: show 150ms ease-out normal;

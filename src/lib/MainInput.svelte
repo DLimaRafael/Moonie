@@ -65,18 +65,20 @@
       placeholder={isSearching
         ? "Something to search..."
         : "Something to do..."}
-      class="flex-1 h-full bg-transparent"
+      class="w-4/5 h-full bg-transparent"
     />
-    <IconButton
-      on:click={toggleSearch}
-      type="button"
-      class="rounded-none bg-transparent"
-    >
-      <SearchOutline class="text-zinc-300" />
-    </IconButton>
-    <IconButton type="submit" class="rounded-none bg-transparent">
-      <PlusOutline class="text-zinc-300" />
-    </IconButton>
+    <div class="flex min-w-fit">
+      <IconButton
+        on:click={toggleSearch}
+        type="button"
+        class="rounded-none bg-transparent"
+      >
+        <SearchOutline class="text-zinc-300" />
+      </IconButton>
+      <IconButton type="submit" class="rounded-none bg-transparent">
+        <PlusOutline class="text-zinc-300" />
+      </IconButton>
+    </div>
   </form>
   <IconButton
     type="button"
