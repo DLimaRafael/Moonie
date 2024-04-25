@@ -6,10 +6,10 @@ Small App for Task Tracking without any of the extra bells and whistles.
 
 - [ ] Tauri integration for desktop app (Windows and Linux)
 - [x] Sub Tasks
-- [ ] Tagging and Searching
-  - [ ] Tagging
+- [1/2] Tagging and Searching
+  - [1/2] Tagging
     - [ ] Turning the tag dialog into a popover (+ Auto Positioning)
-    - [ ] Editing and Deleting Tags
+    - [x] Editing and Deleting Tags
   - [x] Searching
     - [x] Filter by Text
     - [x] Filter by Tags
