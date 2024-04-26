@@ -110,7 +110,7 @@
     clone.style.position = "absolute";
     clone.style.height = "auto";
     clone.style.width = `${textarea.offsetWidth}px`;
-    clone.value = textarea.value;
+    clone.value = textarea.placeholder;
     document.body.appendChild(clone);
     const height = clone.scrollHeight;
     document.body.removeChild(clone);
