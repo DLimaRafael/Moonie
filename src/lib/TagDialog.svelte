@@ -118,7 +118,7 @@
     <hr class="ml-4 mr-4 mt-4 mb-0 border-zinc-600" />
     <input
       bind:value={tagValue}
-      class="bg-transparent h-14 ml-4 mr-4 p-0"
+      class="bg-transparent h-14 pl-4 pr-4 w-full"
       placeholder="New Tag..."
     />
   </form>

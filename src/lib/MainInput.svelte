@@ -65,9 +65,9 @@
       placeholder={isSearching
         ? "Something to search..."
         : "Something to do..."}
-      class="w-4/5 h-full bg-transparent"
+      class="w-full h-full bg-transparent"
     />
-    <div class="flex min-w-fit">
+    <div class="flex flex-1">
       <IconButton
         on:click={toggleSearch}
         type="button"

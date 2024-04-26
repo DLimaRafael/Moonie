@@ -33,9 +33,7 @@
     class="flex flex-1 gap-2 text-left items-center p-2 bg-transparent"
   >
     <span class="{tagStyling} p-1 w-6 rounded-md text-center">#</span>
-    <p
-      class="select-none {nameStyling} overflow-hidden text-ellipsis text-nowrap"
-    >
+    <p class="select-none {nameStyling} text-ellipsis text-nowrap">
       {tag.value}
     </p>
   </button>
