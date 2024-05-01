@@ -46,7 +46,7 @@
       <TagItem handleCheck={onCheck} {tag} tagList={$taskFilters.tags} />
     {/each}
   </ul>
-  {#if $taskFilters.tags.length}
+  {#if $tagData.length}
     <button
       on:click={clearTagFilters}
       class="func-button w-full bg-transparent rounded-md text-zinc-300 font-bold"
