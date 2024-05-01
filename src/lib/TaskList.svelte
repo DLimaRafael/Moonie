@@ -11,11 +11,11 @@
   } from "../utils/taskManager";
   import MainInput from "./MainInput.svelte";
   import TagDialog from "./TagDialog.svelte";
-  import TaskItem from "./TaskItem.svelte";
   import FilterPopover from "./FilterPopover.svelte";
   import { filterData } from "../utils/filterManager";
+  import TaskGroup from "./TaskGroup.svelte";
 
-  // Task -> id, value, isDone, children
+  // Task -> id, value, isDone, children, isCollapsed
 
   $: tasks = filterData($taskData);
   $: parentTasks = tasks.filter((task) => {
@@ -46,29 +46,18 @@
 
 <div class="list-container m-auto h-full flex flex-col max-w-screen-md">
   <MainInput onAdd={handleAddTask} onSearch={handleSearch} />
-  <div class="h-full overflow-y-auto mt-4">
+  <div class="h-full overflow-y-auto mt-4 pr-2">
     <ul class="flex flex-col flex-1 gap-1">
       {#each parentTasks as task (task.id)}
-        <TaskItem
+        <TaskGroup
           {task}
+          {getTaskChildren}
           {handleAddTask}
+          {getTaskProgress}
           {handleDialog}
-          handleDelete={deleteTask}
-          handleSave={saveTask}
-          childrenProgress={getTaskProgress(task.id)}
+          {saveTask}
+          {deleteTask}
         />
-        {#each getTaskChildren(task.id) as child (child.id)}
-          <ul class="ml-7">
-            <TaskItem
-              task={child}
-              {handleAddTask}
-              {handleDialog}
-              handleDelete={deleteTask}
-              handleSave={saveTask}
-              parentId={task.id}
-            />
-          </ul>
-        {/each}
       {/each}
     </ul>
   </div>

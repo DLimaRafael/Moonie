@@ -13,7 +13,7 @@
 
 <button
   type="button"
-  class="flex items-center justify-center {size} rounded-sm p-0 border border-zinc-400 {background}"
+  class="flex items-center select-none justify-center {size} rounded-sm p-0 border border-zinc-400 {background}"
   on:click
 >
   {#if !total}

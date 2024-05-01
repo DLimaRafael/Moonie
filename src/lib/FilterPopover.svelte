@@ -11,6 +11,11 @@
     left: "auto",
   };
 
+  const reverseTag = {
+    id: "noTag",
+    value: "No Tags",
+  };
+
   function calculatePosition() {
     const filterBtn = document.getElementById("filter-button");
     const element = document.getElementById("filter-popover");
@@ -38,10 +43,15 @@
 <div
   id="filter-popover"
   popover="auto"
-  class="m-0 w-72 h-fit max-h-80 p-2 bg-zinc-700 bg-opacity-50 shadow-xl rounded-md"
+  class="m-0 w-72 p-2 bg-zinc-700 bg-opacity-50 shadow-xl rounded-md overflow-hidden"
   style="top: {position.top}; left: {position.left}"
 >
   <ul class="max-h-72 overflow-y-auto">
+    <TagItem
+      handleCheck={onCheck}
+      tag={reverseTag}
+      tagList={$taskFilters.tags}
+    />
     {#each sortedTags as tag (tag.id)}
       <TagItem handleCheck={onCheck} {tag} tagList={$taskFilters.tags} />
     {/each}

@@ -3,6 +3,7 @@
     FilterSolid,
     PlusOutline,
     SearchOutline,
+    SearchSolid,
   } from "flowbite-svelte-icons";
   import IconButton from "./IconButton.svelte";
   import { taskFilters } from "../stores/filters";
@@ -73,10 +74,11 @@
         type="button"
         class="rounded-none bg-transparent"
       >
-        <SearchOutline class="text-zinc-300" />
-      </IconButton>
-      <IconButton type="submit" class="rounded-none bg-transparent">
-        <PlusOutline class="text-zinc-300" />
+        {#if isSearching}
+          <SearchSolid class="text-zinc-300" />
+        {:else}
+          <SearchOutline class="text-zinc-400" />
+        {/if}
       </IconButton>
     </div>
   </form>

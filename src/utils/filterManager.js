@@ -21,13 +21,13 @@ export function toggleFilterTags(tagId, isAssigned) {
 
 export function filterData(data) {
   const filters = get(taskFilters);
-
+  // Default Filtering
   return data.filter((task) => {
     const textMatch =
       !filters.text ||
       task.value.toLowerCase().includes(filters.text.toLowerCase());
     const tagMatch =
-      filters.tags.length === 0 ||
+      !filters.tags.length ||
       task.tags.some((tag) => filters.tags.includes(tag));
 
     return textMatch && tagMatch;

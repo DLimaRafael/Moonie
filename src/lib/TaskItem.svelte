@@ -1,5 +1,6 @@
 <script>
   import {
+    AngleRightOutline,
     CheckPlusCircleOutline,
     TagSolid,
     TrashBinSolid,
@@ -26,6 +27,7 @@
   let inputValue = task.value;
   let isMouseOver = false;
   let textarea;
+  let debounceTimer;
 
   const hasChildren = !!task.children.length;
 
@@ -118,12 +120,15 @@
   }
 
   function handleTextareaResize(entries) {
-    for (const entry of entries) {
-      if (entry.target === textarea) {
-        adjustTextareaHeight();
-        break;
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      for (const entry of entries) {
+        if (entry.target === textarea) {
+          adjustTextareaHeight();
+          break;
+        }
       }
-    }
+    }, 25);
   }
 
   onMount(() => {
@@ -144,7 +149,7 @@
 
 <li
   id="{task.id}-item"
-  class="rounded-md hover:bg-zinc-700 transition-all overflow-hidden {itemStyling}"
+  class="w-full rounded-md hover:bg-zinc-700 transition-all {itemStyling}"
 >
   <form
     on:submit={handleSubmit}
