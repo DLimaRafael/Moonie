@@ -27,7 +27,6 @@
   let inputValue = task.value;
   let isMouseOver = false;
   let textarea;
-  let debounceTimer;
 
   const hasChildren = !!task.children.length;
 
@@ -119,18 +118,6 @@
     return height;
   }
 
-  function handleTextareaResize(entries) {
-    clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      for (const entry of entries) {
-        if (entry.target === textarea) {
-          adjustTextareaHeight();
-          break;
-        }
-      }
-    }, 25);
-  }
-
   onMount(() => {
     textarea = document.getElementById(`${task.id}-textarea`);
 
@@ -142,20 +129,20 @@
       }
     });
 
-    const resizeObserver = new ResizeObserver(handleTextareaResize);
+    const resizeObserver = new ResizeObserver(adjustTextareaHeight);
     resizeObserver.observe(textarea);
   });
 </script>
 
 <li
   id="{task.id}-item"
-  class="w-full rounded-md hover:bg-zinc-700 transition-all {itemStyling}"
+  class="w-full rounded-sm hover:bg-zinc-700 transition-all {itemStyling}"
 >
   <form
     on:submit={handleSubmit}
     on:mouseenter={() => toggleMouseOver(true)}
     on:mouseleave={() => toggleMouseOver(false)}
-    class="flex items-center gap-1 min-h-10 h-fit pl-2"
+    class="flex items-center gap-1 min-h-9 pl-2"
   >
     <Checkbox
       isChecked={complete}
@@ -165,7 +152,7 @@
     />
     <textarea
       id={`${task.id}-textarea`}
-      class="{fontStyling} {inputStyling} bg-transparent flex-1 border-none resize-none overflow-hidden"
+      class="{fontStyling} {inputStyling} pl-1 pb-2 pt-2 bg-transparent flex-1 border-none resize-none overflow-hidden text-sm"
       bind:value={inputValue}
       on:click={handleFocus}
       on:focus={handleFocus}
@@ -179,17 +166,17 @@
       {#if btnShow}
         {#if !task.parentId}
           <IconButton on:click={onAddChild} class="rounded-none bg-transparent">
-            <CheckPlusCircleOutline class="text-zinc-300" />
+            <CheckPlusCircleOutline size="sm" class="text-zinc-300" />
           </IconButton>
         {/if}
         <IconButton
           on:click={(e) => handleDialog(task)}
           class="rounded-none bg-transparent"
         >
-          <TagSolid class="text-zinc-300" />
+          <TagSolid size="sm" class="text-zinc-300" />
         </IconButton>
         <IconButton on:click={onDelete} class="rounded-none bg-transparent">
-          <TrashBinSolid class="text-red-400" />
+          <TrashBinSolid size="sm" class="text-red-400" />
         </IconButton>
       {/if}
     </div>

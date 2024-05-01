@@ -11,17 +11,12 @@
     left: "auto",
   };
 
-  const reverseTag = {
-    id: "noTag",
-    value: "No Tags",
-  };
-
   function calculatePosition() {
     const filterBtn = document.getElementById("filter-button");
     const element = document.getElementById("filter-popover");
     if (filterBtn) {
       const btnRect = filterBtn.getBoundingClientRect();
-      position.top = `${btnRect.y + btnRect.height + 12}px`;
+      position.top = `${btnRect.y + btnRect.height + 10}px`;
       position.left = `${btnRect.x + btnRect.width - 288}px`;
     }
   }
@@ -47,20 +42,25 @@
   style="top: {position.top}; left: {position.left}"
 >
   <ul class="max-h-72 overflow-y-auto">
-    <TagItem
-      handleCheck={onCheck}
-      tag={reverseTag}
-      tagList={$taskFilters.tags}
-    />
     {#each sortedTags as tag (tag.id)}
       <TagItem handleCheck={onCheck} {tag} tagList={$taskFilters.tags} />
     {/each}
   </ul>
-  <button
-    on:click={clearTagFilters}
-    class="clear-button w-full bg-transparent rounded-md text-zinc-300 font-bold"
-    disabled={!$taskFilters.tags.length}>Remove Filters</button
-  >
+  {#if $taskFilters.tags.length}
+    <button
+      on:click={clearTagFilters}
+      class="func-button w-full bg-transparent rounded-md text-zinc-300 font-bold"
+      disabled={!$taskFilters.tags.length}
+    >
+      Remove Filters
+    </button>
+  {:else}
+    <span
+      class="w-full text-zinc-500 select-none flex justify-center font-bold"
+    >
+      No Tags to filter
+    </span>
+  {/if}
 </div>
 
 <style>
@@ -68,7 +68,7 @@
     backdrop-filter: blur(5px);
   }
 
-  .clear-button:hover {
+  .func-button:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
 </style>

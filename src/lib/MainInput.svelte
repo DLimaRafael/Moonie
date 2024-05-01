@@ -54,7 +54,7 @@
   }
 </script>
 
-<div id="main-input-div" class="flex gap-2 h-12">
+<div id="main-input-div" class="flex gap-2 h-10">
   <form
     on:submit={handleSubmit}
     class="flex w-11/12 h-full ml-auto mr-auto rounded-md overflow-hidden transition-all {formStyling} {searchStyling}"
@@ -66,7 +66,7 @@
       placeholder={isSearching
         ? "Something to search..."
         : "Something to do..."}
-      class="w-full h-full bg-transparent"
+      class="w-full h-full bg-transparent text-sm"
     />
     <div class="flex flex-1">
       <IconButton

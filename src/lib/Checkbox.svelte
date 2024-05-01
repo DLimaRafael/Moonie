@@ -8,7 +8,7 @@
   $: background = isChecked ? "bg-zinc-400" : "bg-transparent";
   $: iconBackground = isChecked ? "text-zinc-800" : "text-transparent";
   $: fontBackground = isChecked ? "text-zinc-800" : "text-zinc-400";
-  $: size = total ? "min-w-8 h-6" : "w-6 h-6";
+  $: size = total ? "min-w-8 h-5" : "w-5 h-5";
 </script>
 
 <button

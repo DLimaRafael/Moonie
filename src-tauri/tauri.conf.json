@@ -59,8 +59,8 @@
         "height": 600,
         "resizable": true,
         "title": "Moonie ToDo",
-        "width": 600,
-        "minWidth": 520,
+        "width": 520,
+        "minWidth": 480,
         "minHeight": 400
       }
     ]
