@@ -13,7 +13,7 @@
   $: isCollapsed = false;
 </script>
 
-<div class="w-full flex flex-1 items-center">
+<div class="w-full flex flex-1 items-center gap-1">
   <div class="w-3">
     {#if task.children.length}
       <button

@@ -46,7 +46,7 @@
 
 <div class="list-container m-auto h-full flex flex-col max-w-screen-md">
   <MainInput onAdd={handleAddTask} onSearch={handleSearch} />
-  <div class="h-full overflow-y-auto mt-4 pr-2">
+  <div class="h-full overflow-y-auto mt-4 pr-3">
     <ul class="flex flex-col flex-1 gap-1">
       {#each parentTasks as task (task.id)}
         <TaskGroup
