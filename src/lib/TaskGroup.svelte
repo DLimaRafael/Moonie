@@ -47,7 +47,6 @@
         {handleDialog}
         handleDelete={deleteTask}
         handleSave={saveTask}
-        parentId={task.id}
       />
     {/each}
   </ul>

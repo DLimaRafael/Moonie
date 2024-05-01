@@ -15,13 +15,13 @@
     value: "",
     isDone: false,
     children: [],
+    parentId: "",
   };
   export let handleSave = (value, parentId) => {};
   export let handleDelete = (id, parentId) => {};
   export let handleAddTask = (value, parentId) => {};
   export let handleDialog = (value) => {};
   export let childrenProgress = null;
-  export let parentId = "";
 
   let inputLock = true;
   let inputValue = task.value;
@@ -69,7 +69,7 @@
   }
 
   function onDelete() {
-    handleDelete(task.id, parentId);
+    handleDelete(task.id, task.parentId);
   }
 
   function onAddChild() {
@@ -82,7 +82,7 @@
       ...task,
       isDone: !task.isDone,
     };
-    handleSave(newData, parentId);
+    handleSave(newData, task.parentId);
   }
 
   function handleSubmit(event) {
@@ -177,7 +177,7 @@
     />
     <div class="h-full flex {btnDivStyling} transition-all">
       {#if btnShow}
-        {#if !parentId}
+        {#if !task.parentId}
           <IconButton on:click={onAddChild} class="rounded-none bg-transparent">
             <CheckPlusCircleOutline class="text-zinc-300" />
           </IconButton>

@@ -8,12 +8,16 @@ export function serializeTask() {
     isDone: "",
     tags: [],
     children: [],
+    parentId: "",
   };
 }
 
 export function createTask(data, parentId = "") {
   taskData.update((tasks) => {
-    tasks.push(data);
+    tasks.push({
+      ...data,
+      parentId,
+    });
 
     if (parentId) {
       const parentTask = tasks.find((task) => task.id === parentId);
@@ -29,7 +33,7 @@ export function createTask(data, parentId = "") {
   });
 }
 
-export function saveTask(data, parentId = "", progress = null) {
+export function saveTask(data, parentId = "") {
   taskData.update((tasks) => {
     const index = tasks.findIndex((task) => task.id === data.id);
     if (index === -1) return;
@@ -51,7 +55,9 @@ export function saveTask(data, parentId = "", progress = null) {
 export function deleteTask(id, parentId) {
   taskData.update((tasks) => {
     const filteredTasks = tasks.filter((task) => task.id !== id);
+    const deletedTask = tasks.find((task) => task.id === id);
 
+    // if task is a child
     if (parentId) {
       const parentTask = tasks.find((task) => task.id === parentId);
       if (parentTask && parentTask.children) {
@@ -61,6 +67,15 @@ export function deleteTask(id, parentId) {
       }
     }
 
+    // if task is a parent
+    if (deletedTask.children.length) {
+      getTaskChildren(id).forEach((task) => {
+        saveTask({
+          ...task,
+          parentId: "",
+        });
+      });
+    }
     return filteredTasks;
   });
 }
