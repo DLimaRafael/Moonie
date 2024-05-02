@@ -166,17 +166,17 @@
       {#if btnShow}
         {#if !task.parentId}
           <IconButton on:click={onAddChild} class="rounded-none bg-transparent">
-            <CheckPlusCircleOutline size="sm" class="text-zinc-300" />
+            <CheckPlusCircleOutline size="md" class="text-zinc-300" />
           </IconButton>
         {/if}
         <IconButton
           on:click={(e) => handleDialog(task)}
           class="rounded-none bg-transparent"
         >
-          <TagSolid size="sm" class="text-zinc-300" />
+          <TagSolid size="md" class="text-zinc-300" />
         </IconButton>
         <IconButton on:click={onDelete} class="rounded-none bg-transparent">
-          <TrashBinSolid size="sm" class="text-red-400" />
+          <TrashBinSolid size="md" class="text-red-400" />
         </IconButton>
       {/if}
     </div>
