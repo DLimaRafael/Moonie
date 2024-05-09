@@ -3,14 +3,8 @@
   import { generateUniqueId } from "../utils/dataManager";
   import { dndzone } from "svelte-dnd-action";
   import { flip } from "svelte/animate";
-  import {
-    createTask,
-    deleteTask,
-    getTaskChildren,
-    getTaskProgress,
-    saveTask,
-    serializeTask,
-  } from "../utils/taskManager";
+  import { flipDurationMs } from "../utils/defaults";
+  import { createTask, orderTasks, serializeTask } from "../utils/taskManager";
   import MainInput from "./MainInput.svelte";
   import TagDialog from "./TagDialog.svelte";
   import FilterPopover from "./FilterPopover.svelte";
@@ -19,12 +13,8 @@
 
   // Task -> id, value, isDone, children, isCollapsed
 
-  const flipDurationMs = 100;
-
   $: tasks = filterData($taskData);
-  $: parentTasks = tasks.filter((task) => {
-    return !tasks.some((parent) => parent.children.includes(task.id));
-  });
+  $: parentTasks = tasks.filter((task) => !task.parentId);
 
   function handleDialog(task) {
     const dialog = document.querySelector("dialog");
@@ -48,14 +38,14 @@
   }
 
   function handleConsider(e) {
-    console.log(tasks !== e.detail.items);
-    tasks = e.detail.items;
+    parentTasks = e.detail.items;
   }
 
   function handleFinalize(e) {
-    tasks = e.detail.items;
-    console.log(e.detail.items);
-    //
+    const children = tasks.filter((task) => task.parentId);
+    const ordered = e.detail.items;
+    ordered.push(...children);
+    orderTasks(ordered);
   }
 </script>
 
@@ -64,21 +54,18 @@
   <div class="h-full overflow-y-auto mt-4 pr-3">
     <ul
       class="h-full"
-      use:dndzone={{ items: tasks, flipDurationMs, dropTargetStyle: {} }}
+      use:dndzone={{
+        items: parentTasks,
+        flipDurationMs,
+        dropTargetStyle: {},
+        dropFromOthersDisabled: true,
+      }}
       on:consider={handleConsider}
       on:finalize={handleFinalize}
     >
       {#each parentTasks as task (task.id)}
         <div animate:flip={{ duration: flipDurationMs }}>
-          <TaskGroup
-            {task}
-            {getTaskChildren}
-            {handleAddTask}
-            {getTaskProgress}
-            {handleDialog}
-            {saveTask}
-            {deleteTask}
-          />
+          <TaskGroup {task} {handleAddTask} {handleDialog} />
         </div>
       {/each}
     </ul>

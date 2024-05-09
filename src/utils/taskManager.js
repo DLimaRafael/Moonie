@@ -137,3 +137,15 @@ export function removeTag(taskIds, tagId) {
     return tasks;
   });
 }
+
+export function orderTasks(data) {
+  // console.log(data);
+  taskData.set(data);
+}
+
+export function orderChildren(data, parent) {
+  const orderedIds = data.map((task) => task.id);
+  // console.log(orderedIds);
+  parent.children = orderedIds;
+  saveTask(parent);
+}
