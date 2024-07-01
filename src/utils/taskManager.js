@@ -43,6 +43,7 @@ export function saveTask(data, parentId = "") {
     if (parentId) {
       const parentTask = tasks.find((task) => task.id === parentId);
       if (parentTask) {
+        data.parentId = parentId;
         parentTask.isDone =
           parentTask.children.length === getTaskProgress(parentTask.id);
       }
@@ -139,13 +140,16 @@ export function removeTag(taskIds, tagId) {
 }
 
 export function orderTasks(data) {
-  // console.log(data);
   taskData.set(data);
 }
 
 export function orderChildren(data, parent) {
+  const newTask = data.find((task) => !task.parentId);
+  if (newTask) {
+    saveTask(newTask, parent.id);
+  }
   const orderedIds = data.map((task) => task.id);
-  // console.log(orderedIds);
+  console.log(orderedIds);
   parent.children = orderedIds;
   saveTask(parent);
 }

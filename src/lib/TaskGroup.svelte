@@ -16,7 +16,7 @@
   export let handleAddTask = (data, parentId) => {};
   export let handleDialog = () => {};
 
-  $: isCollapsed = false;
+  $: isCollapsed = !task.children.length;
   $: children = getTaskChildren(task.id);
 
   function onConsider(e) {
@@ -24,7 +24,11 @@
   }
 
   function onFinalize(e) {
-    orderChildren(e.detail.items, task);
+    let data = e.detail.items;
+    if (e.detail.info.trigger === "droppedIntoAnother") {
+      data = data.filter((task) => task.id != e.detail.info.id);
+    }
+    orderChildren(data, task);
   }
 </script>
 
@@ -54,6 +58,7 @@
   />
 </div>
 <ul
+  id={`childzone-{task.id}`}
   class="ml-7"
   use:dndzone={{
     items: children,

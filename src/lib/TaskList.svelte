@@ -58,7 +58,7 @@
         items: parentTasks,
         flipDurationMs,
         dropTargetStyle: {},
-        dropFromOthersDisabled: true,
+        dropFromOthersDisabled: false,
       }}
       on:consider={handleConsider}
       on:finalize={handleFinalize}
