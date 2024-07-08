@@ -149,7 +149,6 @@ export function orderChildren(data, parent) {
     saveTask(newTask, parent.id);
   }
   const orderedIds = data.map((task) => task.id);
-  console.log(orderedIds);
   parent.children = orderedIds;
   saveTask(parent);
 }

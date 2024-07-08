@@ -4,7 +4,12 @@
   import { dndzone } from "svelte-dnd-action";
   import { flip } from "svelte/animate";
   import { flipDurationMs } from "../utils/defaults";
-  import { createTask, orderTasks, serializeTask } from "../utils/taskManager";
+  import {
+    createTask,
+    orderTasks,
+    saveTask,
+    serializeTask,
+  } from "../utils/taskManager";
   import MainInput from "./MainInput.svelte";
   import TagDialog from "./TagDialog.svelte";
   import FilterPopover from "./FilterPopover.svelte";
@@ -42,6 +47,12 @@
   }
 
   function handleFinalize(e) {
+    for (let i = 0; i < e.detail.items.length; i++) {
+      if (e.detail.items[i].parentId) {
+        e.detail.items[i].parentId = "";
+        saveTask(e.detail.items[i]);
+      }
+    }
     const children = tasks.filter((task) => task.parentId);
     const ordered = e.detail.items;
     ordered.push(...children);
@@ -58,7 +69,6 @@
         items: parentTasks,
         flipDurationMs,
         dropTargetStyle: {},
-        dropFromOthersDisabled: false,
       }}
       on:consider={handleConsider}
       on:finalize={handleFinalize}

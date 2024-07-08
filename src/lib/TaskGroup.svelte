@@ -7,6 +7,7 @@
     getTaskChildren,
     getTaskProgress,
     orderChildren,
+    orderTasks,
     saveTask,
   } from "../utils/taskManager";
   import { flipDurationMs } from "../utils/defaults";
@@ -26,7 +27,7 @@
   function onFinalize(e) {
     let data = e.detail.items;
     if (e.detail.info.trigger === "droppedIntoAnother") {
-      data = data.filter((task) => task.id != e.detail.info.id);
+      data = data.filter((task) => task.id !== e.detail.info.id);
     }
     orderChildren(data, task);
   }
