@@ -36,19 +36,26 @@ export function createTask(data, parentId = "") {
 export function saveTask(data, parentId = "") {
   taskData.update((tasks) => {
     const index = tasks.findIndex((task) => task.id === data.id);
-    if (index === -1) return;
+    if (index === -1) return tasks;
 
-    tasks[index] = data;
+    // Update the task with new data
+    tasks[index] = { ...tasks[index], ...data };
 
+    // Handle parentId update
     if (parentId) {
       const parentTask = tasks.find((task) => task.id === parentId);
       if (parentTask) {
-        data.parentId = parentId;
+        tasks[index].parentId = parentId;
+        const childrenTasks = tasks.filter(
+          (task) => task.parentId === parentId
+        );
         parentTask.isDone =
-          parentTask.children.length === getTaskProgress(parentTask.id);
+          childrenTasks.length > 0 &&
+          childrenTasks.every((task) => task.isDone);
       }
+    } else {
+      tasks[index].parentId = data.parentId || "";
     }
-
     return tasks;
   });
 }
@@ -71,10 +78,8 @@ export function deleteTask(id, parentId) {
     // if task is a parent
     if (deletedTask.children.length) {
       getTaskChildren(id).forEach((task) => {
-        saveTask({
-          ...task,
-          parentId: "",
-        });
+        task.parentId = "";
+        saveTask(task);
       });
     }
     return filteredTasks;
