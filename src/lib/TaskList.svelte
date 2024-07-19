@@ -1,11 +1,12 @@
 <script>
   import { dialogTask, taskData } from "../stores/tasks";
   import { generateUniqueId } from "../utils/dataManager";
+  import { dndzone } from "svelte-dnd-action";
+  import { flip } from "svelte/animate";
+  import { flipDurationMs } from "../utils/defaults";
   import {
     createTask,
-    deleteTask,
-    getTaskChildren,
-    getTaskProgress,
+    orderTasks,
     saveTask,
     serializeTask,
   } from "../utils/taskManager";
@@ -18,9 +19,7 @@
   // Task -> id, value, isDone, children, isCollapsed
 
   $: tasks = filterData($taskData);
-  $: parentTasks = tasks.filter((task) => {
-    return !tasks.some((parent) => parent.children.includes(task.id));
-  });
+  $: parentTasks = tasks.filter((task) => !task.parentId);
 
   function handleDialog(task) {
     const dialog = document.querySelector("dialog");
@@ -42,22 +41,42 @@
   function handleSearch() {
     tasks = filterData($taskData);
   }
+
+  function handleConsider(e) {
+    parentTasks = e.detail.items;
+  }
+
+  function handleFinalize(e) {
+    for (let i = 0; i < e.detail.items.length; i++) {
+      if (e.detail.items[i].parentId) {
+        e.detail.items[i].parentId = "";
+        saveTask(e.detail.items[i]);
+      }
+    }
+    const children = tasks.filter((task) => task.parentId);
+    const ordered = e.detail.items;
+    ordered.push(...children);
+    orderTasks(ordered);
+  }
 </script>
 
 <div class="list-container m-auto h-full flex flex-col max-w-screen-md">
   <MainInput onAdd={handleAddTask} onSearch={handleSearch} />
   <div class="h-full overflow-y-auto mt-4 pr-3">
-    <ul class="flex flex-col flex-1 gap-1">
+    <ul
+      class="h-full"
+      use:dndzone={{
+        items: parentTasks,
+        flipDurationMs,
+        dropTargetStyle: {},
+      }}
+      on:consider={handleConsider}
+      on:finalize={handleFinalize}
+    >
       {#each parentTasks as task (task.id)}
-        <TaskGroup
-          {task}
-          {getTaskChildren}
-          {handleAddTask}
-          {getTaskProgress}
-          {handleDialog}
-          {saveTask}
-          {deleteTask}
-        />
+        <div animate:flip={{ duration: flipDurationMs }}>
+          <TaskGroup {task} {handleAddTask} {handleDialog} />
+        </div>
       {/each}
     </ul>
   </div>

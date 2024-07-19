@@ -1,6 +1,5 @@
 <script>
   import {
-    AngleRightOutline,
     CheckPlusCircleOutline,
     TagSolid,
     TrashBinSolid,
