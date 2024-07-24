@@ -13,7 +13,6 @@
 
   function calculatePosition() {
     const filterBtn = document.getElementById("filter-button");
-    const element = document.getElementById("filter-popover");
     if (filterBtn) {
       const btnRect = filterBtn.getBoundingClientRect();
       position.top = `${btnRect.y + btnRect.height + 10}px`;

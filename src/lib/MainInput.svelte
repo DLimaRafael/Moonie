@@ -1,7 +1,7 @@
 <script>
   import {
+    DotsHorizontalOutline,
     FilterSolid,
-    PlusOutline,
     SearchOutline,
     SearchSolid,
   } from "flowbite-svelte-icons";
@@ -55,6 +55,14 @@
 </script>
 
 <div id="main-input-div" class="flex gap-2 h-10">
+  <IconButton
+    type="button"
+    id="options-button"
+    popovertarget="options-popover"
+    class="rounded-md flex w-14 items-center"
+  >
+    <DotsHorizontalOutline class="text-zinc-300" />
+  </IconButton>
   <form
     on:submit={handleSubmit}
     class="flex w-11/12 h-full ml-auto mr-auto rounded-md overflow-hidden transition-all {formStyling} {searchStyling}"

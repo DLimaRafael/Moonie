@@ -15,6 +15,7 @@
   import FilterPopover from "./FilterPopover.svelte";
   import { filterData } from "../utils/filterManager";
   import TaskGroup from "./TaskGroup.svelte";
+  import OptionsPopover from "./OptionsPopover.svelte";
 
   // Task -> id, value, isDone, children, isCollapsed
 
@@ -81,5 +82,6 @@
     </ul>
   </div>
   <FilterPopover />
+  <OptionsPopover />
   <TagDialog />
 </div>
