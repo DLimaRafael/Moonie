@@ -1,6 +1,5 @@
 import { get, writable } from "svelte/store";
 import { serializeTask } from "../utils/taskManager";
-import { serializeTag } from "../utils/tagManager";
 
 // Load tasks from localStorage or initialize an empty array
 const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
