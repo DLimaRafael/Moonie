@@ -16,9 +16,6 @@ Small App for Task Tracking without any of the extra bells and whistles.
     - [x] Filter by Text
     - [x] Filter by Tags
 - [ ] Exporting and Importing Tasks
-- [ ] Customization
-  - Interface Scale
-  - Themes
 - [ ] Custom Icon
 
 _And that's all it needs!_
@@ -27,7 +24,7 @@ _And that's all it needs!_
 
 ## Known Issues & Limitations
 
-Currently, as Moonie uses Local Storage to store all your data, it is limited to around 5mb, I intend to work on this, possibly by transitioning to SQLite or something similar in the future. Either way, this will be worked on when importing and exporting data is implemented.
+Currently, as Moonie uses Local Storage to store all your data, it is limited to around 5mb, which is plenty considering it only stores text. Since this is a minimal software, I don't think more than that is necessary for day-to-day planning, however, I might update the codebase in the future to acommodate larger amounts of data
 
 ## External Tools Used
 
