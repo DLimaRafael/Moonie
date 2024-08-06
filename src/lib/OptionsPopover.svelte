@@ -43,8 +43,6 @@
         // Check if data contains tasks and tags
         if (data.tasks && data.tags) {
           // Save tasks and tags to local storage
-          // localStorage.setItem("tasks", JSON.stringify(data.tasks));
-          // localStorage.setItem("tags", JSON.stringify(data.tags));
           taskData.set(data.tasks);
           tagData.set(data.tags);
           alert("Data imported successfully!");

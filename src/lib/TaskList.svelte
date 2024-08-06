@@ -17,7 +17,7 @@
   import TaskGroup from "./TaskGroup.svelte";
   import OptionsPopover from "./OptionsPopover.svelte";
 
-  // Task -> id, value, isDone, children, isCollapsed
+  // Task -> id, value, isDone, children
 
   $: tasks = filterData($taskData);
   $: parentTasks = tasks.filter((task) => !task.parentId);
