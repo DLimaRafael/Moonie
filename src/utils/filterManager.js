@@ -4,28 +4,24 @@ import { tagData } from "../stores/tasks";
 
 export function toggleFilterTags(tagId, isAssigned) {
   taskFilters.update((value) => {
-    let tags = value.tags;
-
-    if (isAssigned) {
-      tags = tags.filter((tag) => tag !== tagId);
-    } else {
-      tags.push(tagId);
-    }
+    const updatedTags = isAssigned
+      ? value.tags.filter((tag) => tag !== tagId)
+      : [...value.tags, tagId];
 
     return {
-      text: value.text,
-      tags: tags,
+      ...value,
+      tags: updatedTags,
     };
   });
 }
 
 export function filterData(data) {
   const filters = get(taskFilters);
-  // Default Filtering
+  const filterText = filters.text.toLowerCase();
+
   return data.filter((task) => {
     const textMatch =
-      !filters.text ||
-      task.value.toLowerCase().includes(filters.text.toLowerCase());
+      !filterText || task.value.toLowerCase().includes(filterText);
     const tagMatch =
       !filters.tags.length ||
       task.tags.some((tag) => filters.tags.includes(tag));
@@ -36,16 +32,9 @@ export function filterData(data) {
 
 export function getFilterTagNames(ids) {
   const tags = get(tagData);
-
-  const filtered = tags.filter((tag) => ids.includes(tag.id));
-  return filtered;
+  return tags.filter((tag) => ids.includes(tag.id));
 }
 
 export function clearTagFilters() {
-  taskFilters.update((value) => {
-    return {
-      text: value.text,
-      tags: [],
-    };
-  });
+  taskFilters.update((value) => ({ ...value, tags: [] }));
 }

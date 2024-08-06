@@ -16,11 +16,14 @@
   import { filterData } from "../utils/filterManager";
   import TaskGroup from "./TaskGroup.svelte";
   import OptionsPopover from "./OptionsPopover.svelte";
+  import { taskFilters } from "../stores/filters";
 
   // Task -> id, value, isDone, children
 
   $: tasks = filterData($taskData);
-  $: parentTasks = tasks.filter((task) => !task.parentId);
+  $: parentTasks = tasks.filter(
+    (task) => $taskFilters.text || $taskFilters.tags.length || !task.parentId
+  );
 
   function handleDialog(task) {
     const dialog = document.querySelector("dialog");

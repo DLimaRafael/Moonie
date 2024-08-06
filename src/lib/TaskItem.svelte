@@ -7,7 +7,7 @@
   import Checkbox from "./Checkbox.svelte";
   import IconButton from "./IconButton.svelte";
   import { dialogTask } from "../stores/tasks";
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
 
   export let task = {
     id: "",
@@ -26,6 +26,7 @@
   let inputValue = task.value;
   let isMouseOver = false;
   let textarea;
+  let resizeObserver;
 
   const hasChildren = !!task.children.length;
 
@@ -119,6 +120,7 @@
 
   onMount(() => {
     textarea = document.getElementById(`${task.id}-textarea`);
+    if (!textarea) return;
 
     textarea.addEventListener("input", () => {
       if (textarea.value.trim() !== "") {
@@ -128,8 +130,13 @@
       }
     });
 
-    const resizeObserver = new ResizeObserver(adjustTextareaHeight);
+    resizeObserver = new ResizeObserver(adjustTextareaHeight);
     resizeObserver.observe(textarea);
+  });
+
+  onDestroy(() => {
+    textarea?.removeEventListener("input", adjustTextareaHeight);
+    resizeObserver?.disconnect();
   });
 </script>
 

@@ -5,7 +5,7 @@ export function serializeTask() {
   return {
     id: "",
     value: "",
-    isDone: "",
+    isDone: false,
     tags: [],
     children: [],
     parentId: "",
@@ -14,18 +14,14 @@ export function serializeTask() {
 
 export function createTask(data, parentId = "") {
   taskData.update((tasks) => {
-    tasks.push({
-      ...data,
-      parentId,
-    });
+    const newTask = { ...data, parentId };
+    tasks.push(newTask);
 
     if (parentId) {
       const parentTask = tasks.find((task) => task.id === parentId);
       if (parentTask) {
-        if (!parentTask.children) {
-          parentTask.children = [];
-        }
-        parentTask.children.push(data.id);
+        parentTask.children = parentTask.children || [];
+        parentTask.children.push(newTask.id);
       }
     }
 
@@ -39,23 +35,22 @@ export function saveTask(data, parentId = "") {
     if (index === -1) return tasks;
 
     // Update the task with new data
-    tasks[index] = { ...tasks[index], ...data };
+    const updatedTask = { ...tasks[index], ...data };
+    tasks[index] = updatedTask;
 
     // Handle parentId update
     if (parentId) {
       const parentTask = tasks.find((task) => task.id === parentId);
       if (parentTask) {
-        tasks[index].parentId = parentId;
-        const childrenTasks = tasks.filter(
-          (task) => task.parentId === parentId
-        );
-        parentTask.isDone =
-          childrenTasks.length > 0 &&
-          childrenTasks.every((task) => task.isDone);
+        updatedTask.parentId = parentId;
+        parentTask.isDone = tasks
+          .filter((task) => task.parentId === parentId)
+          .every((task) => task.isDone);
       }
     } else {
-      tasks[index].parentId = data.parentId || "";
+      updatedTask.parentId = data.parentId || "";
     }
+
     return tasks;
   });
 }
@@ -65,81 +60,61 @@ export function deleteTask(id, parentId) {
     const filteredTasks = tasks.filter((task) => task.id !== id);
     const deletedTask = tasks.find((task) => task.id === id);
 
-    // if task is a child
     if (parentId) {
       const parentTask = tasks.find((task) => task.id === parentId);
-      if (parentTask && parentTask.children) {
+      if (parentTask) {
         parentTask.children = parentTask.children.filter(
           (child) => child !== id
         );
       }
     }
 
-    // if task is a parent
-    if (deletedTask.children.length) {
-      getTaskChildren(id).forEach((task) => {
-        task.parentId = "";
-        saveTask(task);
+    if (deletedTask?.children?.length) {
+      getTaskChildren(id).forEach((childTask) => {
+        childTask.parentId = "";
+        saveTask(childTask);
       });
     }
+
     return filteredTasks;
   });
 }
 
 export function getTaskChildren(id) {
   const tasks = get(taskData);
-  const taskMap = new Map(tasks.map((task) => [task.id, task]));
-
-  const parentTask = taskMap.get(id);
+  const parentTask = tasks.find((task) => task.id === id);
 
   if (!parentTask || !parentTask.children) {
-    return []; // Return an empty array if the parent task doesn't exist or has no children
+    return [];
   }
 
-  const children = [];
-
-  for (const childId of parentTask.children) {
-    const childTask = taskMap.get(childId);
-    if (childTask) {
-      children.push(childTask);
-    }
-  }
-
-  return children;
+  return parentTask.children
+    .map((childId) => tasks.find((task) => task.id === childId))
+    .filter(Boolean);
 }
 
 export function getTaskProgress(id) {
   const children = getTaskChildren(id);
-  let doneCount = 0;
-
-  for (const child of children) {
-    if (child.isDone) {
-      doneCount++;
-    }
-  }
-
-  return doneCount;
+  return children.filter((child) => child.isDone).length;
 }
 
 export function assignTag(taskId, tagId) {
   taskData.update((tasks) => {
     const task = tasks.find((task) => task.id === taskId);
-
-    task.tags.push(tagId);
-
+    if (task && !task.tags.includes(tagId)) {
+      task.tags.push(tagId);
+    }
     return tasks;
   });
 }
 
 export function removeTag(taskIds, tagId) {
   taskData.update((tasks) => {
-    taskIds.forEach((taskId) => {
-      const task = tasks.find((task) => task.id === taskId);
-      if (task) {
+    tasks.forEach((task) => {
+      if (taskIds.includes(task.id)) {
         task.tags = task.tags.filter((tag) => tag !== tagId);
       }
     });
-
     return tasks;
   });
 }
@@ -153,7 +128,6 @@ export function orderChildren(data, parent) {
   if (newTask) {
     saveTask(newTask, parent.id);
   }
-  const orderedIds = data.map((task) => task.id);
-  parent.children = orderedIds;
+  parent.children = data.map((task) => task.id);
   saveTask(parent);
 }
