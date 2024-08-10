@@ -11,6 +11,11 @@
     left: "auto",
   };
 
+  const untagged = {
+    id: "none",
+    value: "Untagged",
+  };
+
   function calculatePosition() {
     const filterBtn = document.getElementById("filter-button");
     if (filterBtn) {
@@ -21,6 +26,7 @@
   }
 
   function onCheck(tagId, isAssigned) {
+    if (tagId === "none") clearTagFilters();
     toggleFilterTags(tagId, isAssigned);
   }
 
@@ -41,6 +47,7 @@
   style="top: {position.top}; left: {position.left}"
 >
   <ul class="max-h-72 overflow-y-auto">
+    <TagItem handleCheck={onCheck} tag={untagged} tagList={$taskFilters.tags} />
     {#each sortedTags as tag (tag.id)}
       <TagItem handleCheck={onCheck} {tag} tagList={$taskFilters.tags} />
     {/each}

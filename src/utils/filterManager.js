@@ -24,7 +24,9 @@ export function filterData(data) {
       !filterText || task.value.toLowerCase().includes(filterText);
     const tagMatch =
       !filters.tags.length ||
-      task.tags.some((tag) => filters.tags.includes(tag));
+      (filters.tags.includes("none")
+        ? !task.tags.length
+        : task.tags.some((tag) => filters.tags.includes(tag)));
 
     return textMatch && tagMatch;
   });
