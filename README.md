@@ -15,8 +15,8 @@ Small App for Task Tracking without any of the extra bells and whistles.
   - [x] Searching
     - [x] Filter by Text
     - [x] Filter by Tags
-- [ ] Exporting and Importing Tasks
-- [ ] Custom Icon
+- [x] Exporting and Importing Tasks
+- [x] Custom Icon
 
 _And that's all it needs!_
 
