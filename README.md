@@ -26,6 +26,8 @@ _And that's all it needs!_
 
 Currently, as Moonie uses Local Storage to store all your data, it is limited to around 5mb, which is plenty considering it only stores text. Since this is a minimal software, I don't think more than that is necessary for day-to-day planning, however, I might update the codebase in the future to acommodate larger amounts of data
 
+I'm also aware of bugs regarding drag and drop, which is finnicky by itself, will do a major refactor of some code so it works as intended.
+
 ## External Tools Used
 
 [Flowbite Icons](https://flowbite.com/icons/)
