@@ -51,6 +51,7 @@
   }
 
   function handleFinalize(e) {
+    if (e.detail.info.trigger === "droppedIntoAnother") return;
     for (let i = 0; i < e.detail.items.length; i++) {
       if (e.detail.items[i].parentId) {
         e.detail.items[i].parentId = "";
