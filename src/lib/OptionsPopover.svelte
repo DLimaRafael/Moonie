@@ -1,10 +1,10 @@
 <script>
   import { onDestroy, onMount } from "svelte";
-  import { save } from "@tauri-apps/api/dialog";
-  import { writeTextFile, BaseDirectory } from "@tauri-apps/api/fs";
-  import { fs } from "@tauri-apps/api";
-  import { dialog } from "@tauri-apps/api";
+  import { save } from "@tauri-apps/plugin-dialog";
+  import { writeTextFile, BaseDirectory } from "@tauri-apps/plugin-fs";
   import { tagData, taskData } from "../stores/tasks";
+  import * as fs from "@tauri-apps/plugin-fs"
+  import * as dialog from "@tauri-apps/plugin-dialog"
 
   $: position = {
     top: "auto",
@@ -24,12 +24,10 @@
     try {
       // Open a file dialog to select the file to import
       const selectedFilePath = await dialog.open({
-        filters: [
-          {
+        filters: [{
             name: "JSON Files",
             extensions: ["json"],
-          },
-        ],
+          }],
       });
 
       // If the user canceled the open dialog, selectedFilePath will be null
@@ -45,13 +43,14 @@
           // Save tasks and tags to local storage
           taskData.set(data.tasks);
           tagData.set(data.tags);
-          alert("Data imported successfully!");
+          await dialog.message("Data imported successfully!")
+          // alert("Data imported successfully!");
         } else {
-          alert("Invalid data format!");
+          await dialog.message("Invalid data format!", { kind: 'error' });
         }
       }
     } catch (error) {
-      alert("Error importing data!");
+      await dialog.message("Error importing data!", { kind: 'error' });
       console.error(error);
     }
   }
@@ -76,14 +75,14 @@
       if (filePath) {
         // Write the data to the selected file
         await writeTextFile(filePath, jsonData, {
-          dir: BaseDirectory.Document,
+          baseDir: BaseDirectory.Document,
         });
-        alert("Data exported successfully!");
+        await dialog.message("Data exported successfully!");
       } else {
-        alert("Export canceled!");
+        await dialog.message("Export canceled!", { kind: 'error' });
       }
     } catch (error) {
-      alert("Error exporting data!");
+      await dialog.message("Error exporting data!", { kind: 'error' });
       console.error(error);
     }
   }
