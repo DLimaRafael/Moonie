@@ -82,6 +82,11 @@ export function deleteTask(id, parentId) {
 
 export function getTaskChildren(id) {
   const tasks = get(taskData);
+
+  if (!id) {
+    return tasks.filter(task => !task.parentId);
+  }
+
   const parentTask = tasks.find((task) => task.id === id);
 
   if (!parentTask || !parentTask.children) {

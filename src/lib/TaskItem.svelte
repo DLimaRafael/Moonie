@@ -8,6 +8,7 @@
   import IconButton from "./IconButton.svelte";
   import { dialogTask } from "../stores/tasks";
   import { onDestroy, onMount } from "svelte";
+  import TaskGroup from "./TaskGroup.svelte";
 
   export let task = {
     id: "",
@@ -170,11 +171,9 @@
     />
     <div class="h-full flex {btnDivStyling} transition-all">
       {#if btnShow}
-        {#if !task.parentId}
           <IconButton on:click={onAddChild} class="rounded-none bg-transparent">
             <CheckPlusCircleOutline size="md" class="text-zinc-300" />
           </IconButton>
-        {/if}
         <IconButton
           on:click={(e) => handleDialog(task)}
           class="rounded-none bg-transparent"

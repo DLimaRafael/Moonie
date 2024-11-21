@@ -1,15 +1,13 @@
 <script>
-  import { dialogTask, taskData } from "../stores/tasks";
-  import { generateUniqueId } from "../utils/dataManager";
+  import { taskData } from "../stores/tasks";
   import { dndzone } from "svelte-dnd-action";
   import { flip } from "svelte/animate";
   import { flipDurationMs } from "../utils/defaults";
   import {
-    createTask,
     orderTasks,
     saveTask,
-    serializeTask,
   } from "../utils/taskManager";
+  import { handleAddTask, handleDialog } from "../utils/dataManager";
   import MainInput from "./MainInput.svelte";
   import TagDialog from "./TagDialog.svelte";
   import FilterPopover from "./FilterPopover.svelte";
@@ -24,23 +22,6 @@
   $: parentTasks = tasks.filter(
     (task) => $taskFilters.text || $taskFilters.tags.length || !task.parentId
   );
-
-  function handleDialog(task) {
-    const dialog = document.querySelector("dialog");
-    dialogTask.set(task);
-    dialog.showModal();
-  }
-
-  function handleAddTask(value, parentId = "") {
-    let newTask = serializeTask();
-    newTask = {
-      ...newTask,
-      id: generateUniqueId(),
-      value: value,
-    };
-
-    createTask(newTask, parentId);
-  }
 
   function handleSearch() {
     tasks = filterData($taskData);

@@ -7,9 +7,9 @@
     getTaskChildren,
     getTaskProgress,
     orderChildren,
-    orderTasks,
     saveTask,
   } from "../utils/taskManager";
+  import TaskGroup from "./TaskGroup.svelte";
   import { flipDurationMs } from "../utils/defaults";
   import { flip } from "svelte/animate";
 
@@ -17,10 +17,13 @@
   export let handleAddTask = (data, parentId) => {};
   export let handleDialog = () => {};
 
+  let isDragging = false;
+
   $: isCollapsed = !task.children.length;
-  $: children = getTaskChildren(task.id);
+  $: children = isDragging ? children : getTaskChildren(task.id);
 
   function onConsider(e) {
+    isDragging = true;
     children = e.detail.items;
   }
 
@@ -30,6 +33,7 @@
       data = data.filter((task) => task.id !== e.detail.info.id);
     }
     orderChildren(data, task);
+    isDragging = false;
   }
 </script>
 
@@ -58,31 +62,27 @@
     childrenProgress={getTaskProgress(task.id)}
   />
 </div>
-<ul
-  id={`childzone-{task.id}`}
-  class="ml-7"
-  use:dndzone={{
-    items: children,
-    flipDurationMs,
-    dropFromOthersDisabled: isCollapsed,
-  }}
-  on:consider={onConsider}
-  on:finalize={onFinalize}
->
-  {#if !isCollapsed}
-    {#each children as child (child.id)}
-      <div animate:flip={{ duration: flipDurationMs }}>
-        <TaskItem
-          task={child}
-          {handleAddTask}
-          {handleDialog}
-          handleDelete={deleteTask}
-          handleSave={saveTask}
-        />
-      </div>
-    {/each}
-  {/if}
-</ul>
+{#if children.length}
+  <ul
+    id={`childzone-{task.id}`}
+    class="ml-7"
+    use:dndzone={{
+      items: children,
+      flipDurationMs,
+      dropFromOthersDisabled: isCollapsed,
+    }}
+    on:consider={onConsider}
+    on:finalize={onFinalize}
+  >
+    {#if !isCollapsed}
+      {#each children as child (child.id)}
+        <div animate:flip={{ duration: flipDurationMs }}>
+          <TaskGroup task={child} {handleAddTask} {handleDialog} />
+        </div>
+      {/each}
+    {/if}
+  </ul>
+{/if}
 
 <style>
   .expand-btn {
