@@ -18,8 +18,12 @@ export function toggleFilterTags(tagId, isAssigned) {
 export function filterData(data) {
   const filters = get(taskFilters);
   const filterText = filters.text.toLowerCase();
+  const childrenList = [];
 
-  return data.filter((task) => {
+  if (!filterText && !filters.tags.length) return data;
+
+  const filteredData = data.filter((task) => {
+    const isChild = task.parentId;
     const textMatch =
       !filterText || task.value.toLowerCase().includes(filterText);
     const tagMatch =
@@ -28,8 +32,26 @@ export function filterData(data) {
         ? !task.tags.length
         : task.tags.some((tag) => filters.tags.includes(tag)));
 
+    // check if task is a child of another task and matches filters, so it can show
+    // parentTask instead.
+    if (textMatch && tagMatch && isChild) {
+      childrenList.push(task.id);
+      return false;
+    }
+
     return textMatch && tagMatch;
   });
+
+  childrenList.length &&
+    data.forEach((task) => {
+      if (childrenList.some((child) => task.children.includes(child))) {
+        !filteredData.some((ftask) => ftask.children.includes(task.id)) &&
+          !filteredData.includes(task) &&
+          filteredData.push(task);
+      }
+    });
+
+  return filteredData;
 }
 
 export function getFilterTagNames(ids) {

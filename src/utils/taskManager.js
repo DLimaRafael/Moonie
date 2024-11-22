@@ -80,6 +80,12 @@ export function deleteTask(id, parentId) {
   });
 }
 
+export function getTaskParent(id) {
+  const tasks = get(taskData)
+
+  return tasks.find(task => task.id === id) || {}
+}
+
 export function getTaskChildren(id) {
   const tasks = get(taskData);
 
