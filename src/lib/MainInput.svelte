@@ -100,7 +100,7 @@
     <span class="w-5 {filterIconStyling}">{$taskFilters.tags.length}</span>
   </IconButton>
 </div>
-{#if $taskFilters.tags.length}
+{#if $taskFilters.tags.length && !$taskFilters.tags.includes("none")}
   <div id="search-tags-div" class="w-full flex flex-wrap gap-1 h-fit mt-2">
     {#each getFilterTagNames($taskFilters.tags) as tag (tag.id)}
       <span

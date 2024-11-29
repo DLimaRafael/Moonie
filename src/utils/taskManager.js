@@ -55,13 +55,13 @@ export function saveTask(data, parentId = "") {
   });
 }
 
-export function deleteTask(id, parentId) {
+export function deleteTask(id) {
   taskData.update((tasks) => {
     const filteredTasks = tasks.filter((task) => task.id !== id);
     const deletedTask = tasks.find((task) => task.id === id);
 
-    if (parentId) {
-      const parentTask = tasks.find((task) => task.id === parentId);
+    if (deletedTask.parentId) {
+      const parentTask = tasks.find((task) => task.id === deletedTask.parentId);
       if (parentTask) {
         parentTask.children = parentTask.children.filter(
           (child) => child !== id
@@ -72,7 +72,6 @@ export function deleteTask(id, parentId) {
     if (deletedTask?.children?.length) {
       getTaskChildren(id).forEach((childTask) => {
         childTask.parentId = "";
-        saveTask(childTask);
       });
     }
 
@@ -81,27 +80,15 @@ export function deleteTask(id, parentId) {
 }
 
 export function getTaskParent(id) {
-  const tasks = get(taskData)
+  const tasks = get(taskData);
 
-  return tasks.find(task => task.id === id) || {}
+  return tasks.find((task) => task.id === id) || {};
 }
 
 export function getTaskChildren(id) {
   const tasks = get(taskData);
 
-  if (!id) {
-    return tasks.filter(task => !task.parentId);
-  }
-
-  const parentTask = tasks.find((task) => task.id === id);
-
-  if (!parentTask || !parentTask.children) {
-    return [];
-  }
-
-  return parentTask.children
-    .map((childId) => tasks.find((task) => task.id === childId))
-    .filter(Boolean);
+  return tasks.filter((task) => task.parentId === id);
 }
 
 export function getTaskProgress(id) {
@@ -135,10 +122,13 @@ export function orderTasks(data) {
 }
 
 export function orderChildren(data, parent) {
-  const newTask = data.find((task) => !task.parentId);
-  if (newTask) {
-    saveTask(newTask, parent.id);
-  }
+  const newChild = data.find((task) => task.parentId !== parent.id);
+  if (newChild) saveTask({ ...newChild, parentId: parent.id });
   parent.children = data.map((task) => task.id);
   saveTask(parent);
+  console.log(
+    data,
+    data.map((task) => task.id),
+    parent.children
+  );
 }

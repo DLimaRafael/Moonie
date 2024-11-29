@@ -1,12 +1,9 @@
 <script>
   import { taskData } from "../stores/tasks";
-  import { dndzone } from "svelte-dnd-action";
+  import { dragHandleZone } from "svelte-dnd-action";
   import { flip } from "svelte/animate";
   import { flipDurationMs } from "../utils/defaults";
-  import {
-    orderTasks,
-    saveTask,
-  } from "../utils/taskManager";
+  import { orderTasks } from "../utils/taskManager";
   import { handleAddTask, handleDialog } from "../utils/dataManager";
   import MainInput from "./MainInput.svelte";
   import TagDialog from "./TagDialog.svelte";
@@ -14,14 +11,11 @@
   import { filterData } from "../utils/filterManager";
   import TaskGroup from "./TaskGroup.svelte";
   import OptionsPopover from "./OptionsPopover.svelte";
-  import { taskFilters } from "../stores/filters";
 
   // Task -> id, value, isDone, children
 
   $: tasks = filterData($taskData);
-  $: parentTasks = tasks.filter(
-    (task) => $taskFilters.text || $taskFilters.tags.length || !task.parentId
-  );
+  $: parentTasks = tasks.filter((task) => !task.parentId);
 
   function handleSearch() {
     tasks = filterData($taskData);
@@ -32,17 +26,21 @@
   }
 
   function handleFinalize(e) {
-    if (e.detail.info.trigger === "droppedIntoAnother") return;
-    for (let i = 0; i < e.detail.items.length; i++) {
-      if (e.detail.items[i].parentId) {
-        e.detail.items[i].parentId = "";
-        saveTask(e.detail.items[i]);
+    let data = e.detail.items;
+
+    data.forEach((task) => {
+      if (task.parentId) {
+        task.parentId = "";
       }
+    });
+
+    if (e.detail.info.trigger === "droppedIntoAnother") {
+      data = data.filter((task) => task.id !== e.detail.info.id);
     }
-    const children = tasks.filter((task) => task.parentId);
-    const ordered = e.detail.items;
-    ordered.push(...children);
-    orderTasks(ordered);
+
+    data.push(...tasks.filter((task) => task.parentId));
+
+    orderTasks(data);
   }
 </script>
 
@@ -50,8 +48,9 @@
   <MainInput onAdd={handleAddTask} onSearch={handleSearch} />
   <div class="h-full overflow-y-auto mt-4 pr-3">
     <ul
+      id="mainGroup"
       class="h-full"
-      use:dndzone={{
+      use:dragHandleZone={{
         items: parentTasks,
         flipDurationMs,
         dropTargetStyle: {},
