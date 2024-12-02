@@ -1,6 +1,7 @@
 <script>
   export let title = "Confirmation";
   export let msg = "";
+  export let infoDialog = false;
   export let onConfirm = () => {};
   export let onClose = () => {};
 </script>
@@ -14,7 +15,9 @@
     <span class="leading-5 select-none">{msg}</span>
   </div>
   <div class="w-full flex gap-10 justify-center mt-7">
-    <button class="flex-1 bg-slate-600" on:click={onClose}>Cancel</button>
+    {#if !infoDialog}
+      <button class="flex-1 bg-slate-600" on:click={onClose}>Cancel</button>
+    {/if}
     <button
       class="flex-1 bg-zinc-400 text-zinc-800"
       on:click={() => onConfirm()}>Confirm</button

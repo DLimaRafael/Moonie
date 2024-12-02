@@ -3,8 +3,8 @@
   import { save } from "@tauri-apps/plugin-dialog";
   import { writeTextFile, BaseDirectory } from "@tauri-apps/plugin-fs";
   import { tagData, taskData } from "../stores/tasks";
-  import * as fs from "@tauri-apps/plugin-fs"
-  import * as dialog from "@tauri-apps/plugin-dialog"
+  import * as fs from "@tauri-apps/plugin-fs";
+  import * as dialog from "@tauri-apps/plugin-dialog";
 
   $: position = {
     top: "auto",
@@ -24,10 +24,12 @@
     try {
       // Open a file dialog to select the file to import
       const selectedFilePath = await dialog.open({
-        filters: [{
+        filters: [
+          {
             name: "JSON Files",
             extensions: ["json"],
-          }],
+          },
+        ],
       });
 
       // If the user canceled the open dialog, selectedFilePath will be null
@@ -43,14 +45,14 @@
           // Save tasks and tags to local storage
           taskData.set(data.tasks);
           tagData.set(data.tags);
-          await dialog.message("Data imported successfully!")
+          await dialog.message("Data imported successfully!");
           // alert("Data imported successfully!");
         } else {
-          await dialog.message("Invalid data format!", { kind: 'error' });
+          await dialog.message("Invalid data format!", { kind: "error" });
         }
       }
     } catch (error) {
-      await dialog.message("Error importing data!", { kind: 'error' });
+      await dialog.message("Error importing data!", { kind: "error" });
       console.error(error);
     }
   }
@@ -78,11 +80,9 @@
           baseDir: BaseDirectory.Document,
         });
         await dialog.message("Data exported successfully!");
-      } else {
-        await dialog.message("Export canceled!", { kind: 'error' });
       }
     } catch (error) {
-      await dialog.message("Error exporting data!", { kind: 'error' });
+      await dialog.message("Error exporting data!", { kind: "error" });
       console.error(error);
     }
   }

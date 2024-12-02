@@ -99,15 +99,7 @@
     {#if sortedTags.length}
       {#each sortedTags as tag (tag.id)}
         <li>
-          <TagItem
-            {tag}
-            tagList={$dialogTask.tags}
-            handleCheck={onCheck}
-            handleDelete={onDelete}
-            handleEdit={onEdit}
-            canDelete
-            canEdit
-          />
+          <TagItem {tag} tagList={$dialogTask.tags} handleCheck={onCheck} />
         </li>
       {/each}
     {:else}

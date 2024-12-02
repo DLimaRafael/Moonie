@@ -4,16 +4,17 @@
   import TagItem from "./TagItem.svelte";
   import { onDestroy, onMount } from "svelte";
   import { clearTagFilters, toggleFilterTags } from "../utils/filterManager";
+  import IconButton from "./IconButton.svelte";
+  import { TagOutline, TrashBinSolid } from "flowbite-svelte-icons";
 
   $: sortedTags = $tagData.sort((a, b) => a.value.localeCompare(b.value));
+  $: untaggedFilter = $taskFilters.tags.includes("none");
+  $: untaggedStyle = untaggedFilter
+    ? "bg-zinc-400 text-zinc-700"
+    : "text-zinc-300";
   $: position = {
     top: "auto",
     left: "auto",
-  };
-
-  const untagged = {
-    id: "none",
-    value: "Untagged",
   };
 
   function calculatePosition() {
@@ -26,7 +27,6 @@
   }
 
   function onCheck(tagId, isAssigned) {
-    if (tagId === "none") clearTagFilters();
     toggleFilterTags(tagId, isAssigned);
   }
 
@@ -47,19 +47,34 @@
   style="top: {position.top}; left: {position.left}"
 >
   <ul class="max-h-72 overflow-y-auto">
-    <TagItem handleCheck={onCheck} tag={untagged} tagList={$taskFilters.tags} />
     {#each sortedTags as tag (tag.id)}
-      <TagItem handleCheck={onCheck} {tag} tagList={$taskFilters.tags} />
+      <TagItem
+        handleCheck={onCheck}
+        {tag}
+        tagList={$taskFilters.tags}
+        canDelete
+        canEdit
+      />
     {/each}
   </ul>
   {#if $tagData.length}
-    <button
-      on:click={clearTagFilters}
-      class="func-button w-full bg-transparent rounded-md text-zinc-300 font-bold"
-      disabled={!$taskFilters.tags.length}
-    >
-      Remove Filters
-    </button>
+    <div class="flex gap-1 mt-2">
+      <IconButton
+        on:click={() => onCheck("none", untaggedFilter)}
+        class="flex-grow {untaggedStyle}"
+      >
+        <TagOutline />
+        <span>Untagged</span>
+      </IconButton>
+      <IconButton
+        on:click={clearTagFilters}
+        class="flex-grow text-zinc-300"
+        disabled={!$taskFilters.tags.length}
+      >
+        <TrashBinSolid />
+        Clear Filters
+      </IconButton>
+    </div>
   {:else}
     <span
       class="w-full text-zinc-500 select-none flex justify-center font-bold"
@@ -72,9 +87,5 @@
 <style>
   div[popover] {
     backdrop-filter: blur(5px);
-  }
-
-  .func-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
   }
 </style>

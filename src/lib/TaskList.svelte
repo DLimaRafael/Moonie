@@ -50,6 +50,7 @@
     <ul
       id="mainGroup"
       class="h-full"
+      tabindex="-1"
       use:dragHandleZone={{
         items: parentTasks,
         flipDurationMs,
@@ -69,3 +70,14 @@
   <OptionsPopover />
   <TagDialog />
 </div>
+
+<style>
+  ul {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+  }
+  ul:focus {
+    border: none;
+  }
+</style>

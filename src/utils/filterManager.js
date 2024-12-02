@@ -4,10 +4,15 @@ import { tagData } from "../stores/tasks";
 
 export function toggleFilterTags(tagId, isAssigned) {
   taskFilters.update((value) => {
-    const updatedTags = isAssigned
+    let updatedTags = isAssigned
       ? value.tags.filter((tag) => tag !== tagId)
       : [...value.tags, tagId];
 
+    if (tagId === "none" && !isAssigned) {
+      updatedTags = ["none"];
+    } else if (updatedTags.includes("none") && tagId !== "none") {
+      updatedTags = updatedTags.filter((tag) => tag !== "none");
+    }
     return {
       ...value,
       tags: updatedTags,

@@ -8,6 +8,7 @@
   import IconButton from "./IconButton.svelte";
   import { taskFilters } from "../stores/filters";
   import { getFilterTagNames } from "../utils/filterManager";
+  import { tagData } from "../stores/tasks";
 
   export let onAdd = (value) => {};
   export let onSearch = () => {};
@@ -30,6 +31,8 @@
     });
   }
   $: $taskFilters.tags, onSearch();
+  $: filterTags = getFilterTagNames($taskFilters.tags);
+  $: $tagData, (filterTags = getFilterTagNames($taskFilters.tags));
 
   function toggleFocus() {
     inputFocus = !inputFocus;
@@ -102,7 +105,7 @@
 </div>
 {#if $taskFilters.tags.length && !$taskFilters.tags.includes("none")}
   <div id="search-tags-div" class="w-full flex flex-wrap gap-1 h-fit mt-2">
-    {#each getFilterTagNames($taskFilters.tags) as tag (tag.id)}
+    {#each filterTags as tag (tag.id)}
       <span
         class="select-none bg-zinc-700 h-fit pl-2 pr-2 rounded-sm text-xs flex-wrap"
       >

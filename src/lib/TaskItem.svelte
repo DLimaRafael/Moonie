@@ -10,6 +10,7 @@
   import { onDestroy, onMount } from "svelte";
   import { serializeTask } from "../utils/taskManager";
   import { getTags } from "../utils/tagManager";
+  import { flip } from "svelte/animate";
 
   export let task = serializeTask();
   export let handleSave = (value, parentId) => {};
@@ -183,9 +184,10 @@
     </div>
   </form>
   {#if !inputLock && task.tags.length}
-    <div class="flex gap-1 flex-wrap m-2">
+    <div class="flex gap-1 flex-wrap m-1">
       {#each tags as tag (tag.id)}
-        <span class="bg-zinc-600 text-zinc-400 rounded-sm p-1 text-xs"
+        <span
+          class="bg-zinc-600 text-zinc-400 rounded-sm pl-1 pr-1 text-xs font-bold select-none"
           >{tag.value}</span
         >
       {/each}
