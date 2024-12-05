@@ -72,6 +72,7 @@ button {
   overflow: hidden;
   position: relative;
   text-align: center;
+  user-select: none;
 
   &:disabled {
     opacity: 0.5;

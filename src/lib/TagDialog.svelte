@@ -9,15 +9,10 @@
   import { assignTag, removeTag, serializeTask } from "../utils/taskManager";
   import TagItem from "./TagItem.svelte";
   import { onMount } from "svelte";
-  import ConfirmDialog from "./ConfirmDialog.svelte";
-  import EditTagDialog from "./EditTagDialog.svelte";
 
   let tagValue = "";
   let dialog;
 
-  let confirmDialog, confirmMsg, confirmTitle, editDialog;
-
-  $: targetTag = undefined;
   $: sortedTags = $tagData.sort((a, b) => a.value.localeCompare(b.value));
 
   function onSubmit(event) {
@@ -35,42 +30,6 @@
     } else {
       assignTag($dialogTask.id, tagId);
     }
-  }
-
-  function onDelete(tag) {
-    confirmDialog = document.querySelector("dialog#confirm-dialog");
-    confirmTitle = "Delete Tag";
-    confirmMsg = `The tag "${tag.value}" will be removed from all the tasks assigned, are you sure?`;
-    targetTag = tag;
-    // @ts-ignore
-    confirmDialog.showModal();
-  }
-
-  function onEdit(tag) {
-    editDialog = document.querySelector("dialog#edit-tag-dialog");
-    targetTag = tag;
-    // @ts-ignore
-    editDialog.showModal();
-  }
-
-  function onCloseConfirm() {
-    confirmDialog.close();
-    targetTag = serializeTag();
-  }
-
-  function onDeleteConfirm() {
-    deleteTag(targetTag.id);
-    onCloseConfirm();
-  }
-
-  function onCloseEdit() {
-    editDialog.close();
-    targetTag = serializeTag();
-  }
-
-  function onConfirmEdit(newData) {
-    saveTag(newData);
-    onCloseEdit();
   }
 
   onMount(() => {
@@ -115,17 +74,6 @@
     />
   </form>
 </dialog>
-<ConfirmDialog
-  title={confirmTitle}
-  msg={confirmMsg}
-  onClose={onCloseConfirm}
-  onConfirm={onDeleteConfirm}
-/>
-<EditTagDialog
-  tag={targetTag}
-  onClose={onCloseEdit}
-  onConfirm={onConfirmEdit}
-/>
 
 <style>
   @media (max-height: 500px) {

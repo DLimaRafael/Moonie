@@ -6,6 +6,8 @@
   import { clearTagFilters, toggleFilterTags } from "../utils/filterManager";
   import IconButton from "./IconButton.svelte";
   import { TagOutline, TrashBinSolid } from "flowbite-svelte-icons";
+  import ConfirmDialog from "./ConfirmDialog.svelte";
+  import { deleteTag, serializeTag } from "../utils/tagManager";
 
   $: sortedTags = $tagData.sort((a, b) => a.value.localeCompare(b.value));
   $: untaggedFilter = $taskFilters.tags.includes("none");
@@ -16,6 +18,11 @@
     top: "auto",
     left: "auto",
   };
+
+  let confirmDialog;
+  let confirmTitle;
+  let confirmMsg;
+  let targetTag = serializeTag();
 
   function calculatePosition() {
     const filterBtn = document.getElementById("filter-button");
@@ -28,6 +35,22 @@
 
   function onCheck(tagId, isAssigned) {
     toggleFilterTags(tagId, isAssigned);
+  }
+
+  function onDeleteTag(tag) {
+    confirmTitle = "Delete Tag";
+    confirmMsg = `"${tag.value}" will be removed from all the tasks assigned, are you sure?`;
+    confirmDialog.showModal();
+  }
+
+  function onConfirmDelete() {
+    deleteTag(targetTag.id);
+    onCloseConfirm();
+  }
+
+  function onCloseConfirm() {
+    confirmDialog.close();
+    targetTag = serializeTag();
   }
 
   onMount(() => {
@@ -50,6 +73,7 @@
     {#each sortedTags as tag (tag.id)}
       <TagItem
         handleCheck={onCheck}
+        handleDelete={onDeleteTag}
         {tag}
         tagList={$taskFilters.tags}
         canDelete
@@ -83,6 +107,13 @@
     </span>
   {/if}
 </div>
+<ConfirmDialog
+  bind:dialog={confirmDialog}
+  title={confirmTitle}
+  msg={confirmMsg}
+  onConfirm={onConfirmDelete}
+  onClose={onCloseConfirm}
+/>
 
 <style>
   div[popover] {

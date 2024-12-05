@@ -4,9 +4,11 @@
   export let infoDialog = false;
   export let onConfirm = () => {};
   export let onClose = () => {};
+  export let dialog;
 </script>
 
 <dialog
+  bind:this={dialog}
   id="confirm-dialog"
   class="w-8/12 bg-zinc-700 bg-opacity-50 shadow-2xl text-center p-8 rounded-md"
 >

@@ -4,11 +4,11 @@
   import { flip } from "svelte/animate";
   import { flipDurationMs } from "../utils/defaults";
   import { orderTasks } from "../utils/taskManager";
+  import { filterData } from "../utils/filterManager";
   import { handleAddTask, handleDialog } from "../utils/dataManager";
   import MainInput from "./MainInput.svelte";
   import TagDialog from "./TagDialog.svelte";
   import FilterPopover from "./FilterPopover.svelte";
-  import { filterData } from "../utils/filterManager";
   import TaskGroup from "./TaskGroup.svelte";
   import OptionsPopover from "./OptionsPopover.svelte";
 
