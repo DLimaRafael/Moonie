@@ -5,7 +5,7 @@ Small App for Task Tracking without any of the extra bells and whistles.
 ## TO-DO
 
 - [1/2] Tauri integration for desktop app (Windows and Linux)
-  - [x] msi, deb, appImage
+  - [x] msi, deb, appImage, rpm
   - [ ] flatpak\*
 - [x] Sub Tasks
 - [1/2] Tagging and Searching
@@ -25,8 +25,6 @@ _And that's all it needs!_
 ## Known Issues & Limitations
 
 Currently, as Moonie uses Local Storage to store all your data, it is limited to around 5mb, which is plenty considering it only stores text. Since this is a minimal software, I don't think more than that is necessary for day-to-day planning, however, I might update the codebase in the future to acommodate larger amounts of data
-
-I'm also aware of bugs regarding drag and drop, which is finnicky by itself, will do a major refactor of some code so it works as intended.
 
 ## External Tools Used
 
