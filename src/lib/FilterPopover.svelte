@@ -4,17 +4,26 @@
   import TagItem from "./TagItem.svelte";
   import { onDestroy, onMount } from "svelte";
   import { clearTagFilters, toggleFilterTags } from "../utils/filterManager";
+  import IconButton from "./IconButton.svelte";
+  import { TagOutline, TrashBinSolid } from "flowbite-svelte-icons";
+  import ConfirmDialog from "./ConfirmDialog.svelte";
+  import { createTag, deleteTag, serializeTag } from "../utils/tagManager";
 
   $: sortedTags = $tagData.sort((a, b) => a.value.localeCompare(b.value));
+  $: untaggedFilter = $taskFilters.tags.includes("none");
+  $: untaggedStyle = untaggedFilter
+    ? "bg-zinc-400 text-zinc-700"
+    : "text-zinc-300";
   $: position = {
     top: "auto",
     left: "auto",
   };
 
-  const untagged = {
-    id: "none",
-    value: "Untagged",
-  };
+  let confirmDialog;
+  let confirmTitle;
+  let confirmMsg;
+  let targetTag = serializeTag();
+  let tagValue;
 
   function calculatePosition() {
     const filterBtn = document.getElementById("filter-button");
@@ -26,8 +35,33 @@
   }
 
   function onCheck(tagId, isAssigned) {
-    if (tagId === "none") clearTagFilters();
     toggleFilterTags(tagId, isAssigned);
+  }
+
+  function onDeleteTag(tag) {
+    confirmTitle = "Delete Tag";
+    confirmMsg = `"${tag.value}" will be removed from all the tasks assigned, are you sure?`;
+    targetTag = tag;
+    confirmDialog.showModal();
+  }
+
+  function onConfirmDelete() {
+    deleteTag(targetTag.id);
+    onCloseConfirm();
+  }
+
+  function onCloseConfirm() {
+    confirmDialog.close();
+    targetTag = serializeTag();
+  }
+
+  function onSubmit(event) {
+    event.preventDefault();
+    if (!tagValue) return;
+    const newTag = serializeTag();
+    newTag.value = tagValue;
+    createTag(newTag);
+    tagValue = "";
   }
 
   onMount(() => {
@@ -46,20 +80,36 @@
   class="m-0 w-72 p-2 bg-zinc-700 bg-opacity-50 shadow-xl rounded-md overflow-hidden"
   style="top: {position.top}; left: {position.left}"
 >
-  <ul class="max-h-72 overflow-y-auto">
-    <TagItem handleCheck={onCheck} tag={untagged} tagList={$taskFilters.tags} />
+  <ul class="max-h-64 overflow-y-auto">
     {#each sortedTags as tag (tag.id)}
-      <TagItem handleCheck={onCheck} {tag} tagList={$taskFilters.tags} />
+      <TagItem
+        handleCheck={onCheck}
+        handleDelete={onDeleteTag}
+        {tag}
+        tagList={$taskFilters.tags}
+        canDelete
+        canEdit
+      />
     {/each}
   </ul>
   {#if $tagData.length}
-    <button
-      on:click={clearTagFilters}
-      class="func-button w-full bg-transparent rounded-md text-zinc-300 font-bold"
-      disabled={!$taskFilters.tags.length}
-    >
-      Remove Filters
-    </button>
+    <div class="flex gap-1 mt-2">
+      <IconButton
+        on:click={() => onCheck("none", untaggedFilter)}
+        class="flex-grow {untaggedStyle}"
+      >
+        <TagOutline />
+        <span>Untagged</span>
+      </IconButton>
+      <IconButton
+        on:click={clearTagFilters}
+        class="flex-grow text-zinc-300"
+        disabled={!$taskFilters.tags.length}
+      >
+        <TrashBinSolid />
+        Clear Filters
+      </IconButton>
+    </div>
   {:else}
     <span
       class="w-full text-zinc-500 select-none flex justify-center font-bold"
@@ -67,14 +117,24 @@
       No Tags to filter
     </span>
   {/if}
+  <form on:submit={onSubmit}>
+    <input
+      bind:value={tagValue}
+      class="bg-zinc-800 text-zinc-300 w-full p-2 mt-2 rounded-md bg-opacity-60"
+      placeholder="New Tag..."
+    />
+  </form>
 </div>
+<ConfirmDialog
+  bind:dialog={confirmDialog}
+  title={confirmTitle}
+  msg={confirmMsg}
+  onConfirm={onConfirmDelete}
+  onClose={onCloseConfirm}
+/>
 
 <style>
   div[popover] {
     backdrop-filter: blur(5px);
-  }
-
-  .func-button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
   }
 </style>

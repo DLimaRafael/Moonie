@@ -55,13 +55,13 @@ export function saveTask(data, parentId = "") {
   });
 }
 
-export function deleteTask(id, parentId) {
+export function deleteTask(id) {
   taskData.update((tasks) => {
     const filteredTasks = tasks.filter((task) => task.id !== id);
     const deletedTask = tasks.find((task) => task.id === id);
 
-    if (parentId) {
-      const parentTask = tasks.find((task) => task.id === parentId);
+    if (deletedTask.parentId) {
+      const parentTask = tasks.find((task) => task.id === deletedTask.parentId);
       if (parentTask) {
         parentTask.children = parentTask.children.filter(
           (child) => child !== id
@@ -72,7 +72,6 @@ export function deleteTask(id, parentId) {
     if (deletedTask?.children?.length) {
       getTaskChildren(id).forEach((childTask) => {
         childTask.parentId = "";
-        saveTask(childTask);
       });
     }
 
@@ -80,17 +79,28 @@ export function deleteTask(id, parentId) {
   });
 }
 
+export function getTaskParent(id) {
+  const tasks = get(taskData);
+
+  return tasks.find((task) => task.id === id) || {};
+}
+
 export function getTaskChildren(id) {
   const tasks = get(taskData);
-  const parentTask = tasks.find((task) => task.id === id);
 
-  if (!parentTask || !parentTask.children) {
-    return [];
-  }
+  // Create a Map of tasks for fast lookups by task id
+  const taskMap = new Map(tasks.map((task) => [task.id, task]));
 
-  return parentTask.children
-    .map((childId) => tasks.find((task) => task.id === childId))
-    .filter(Boolean);
+  // Find the parent task
+  const parent = taskMap.get(id);
+  if (!parent) return []; // If the parent task is not found, return an empty array
+
+  // Get children in the order specified by parent.children
+  const orderedChildren = parent.children
+    .map((childId) => taskMap.get(childId)) // Use the Map to quickly retrieve each child
+    .filter((child) => child !== undefined); // In case any childId is invalid or doesn't exist
+
+  return orderedChildren;
 }
 
 export function getTaskProgress(id) {
@@ -124,10 +134,8 @@ export function orderTasks(data) {
 }
 
 export function orderChildren(data, parent) {
-  const newTask = data.find((task) => !task.parentId);
-  if (newTask) {
-    saveTask(newTask, parent.id);
-  }
+  const newChild = data.find((task) => task.parentId !== parent.id);
+  if (newChild) saveTask({ ...newChild, parentId: parent.id });
   parent.children = data.map((task) => task.id);
   saveTask(parent);
 }

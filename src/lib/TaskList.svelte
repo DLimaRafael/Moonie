@@ -1,45 +1,27 @@
 <script>
   import { dialogTask, taskData } from "../stores/tasks";
-  import { generateUniqueId } from "../utils/dataManager";
-  import { dndzone } from "svelte-dnd-action";
+  import { dragHandleZone } from "svelte-dnd-action";
   import { flip } from "svelte/animate";
   import { flipDurationMs } from "../utils/defaults";
-  import {
-    createTask,
-    orderTasks,
-    saveTask,
-    serializeTask,
-  } from "../utils/taskManager";
+  import { orderTasks } from "../utils/taskManager";
+  import { filterData } from "../utils/filterManager";
+  import { handleAddTask } from "../utils/dataManager";
   import MainInput from "./MainInput.svelte";
   import TagDialog from "./TagDialog.svelte";
   import FilterPopover from "./FilterPopover.svelte";
-  import { filterData } from "../utils/filterManager";
   import TaskGroup from "./TaskGroup.svelte";
   import OptionsPopover from "./OptionsPopover.svelte";
-  import { taskFilters } from "../stores/filters";
 
   // Task -> id, value, isDone, children
 
   $: tasks = filterData($taskData);
-  $: parentTasks = tasks.filter(
-    (task) => $taskFilters.text || $taskFilters.tags.length || !task.parentId
-  );
+  $: parentTasks = tasks.filter((task) => !task.parentId);
+
+  let tagDialog;
 
   function handleDialog(task) {
-    const dialog = document.querySelector("dialog");
     dialogTask.set(task);
-    dialog.showModal();
-  }
-
-  function handleAddTask(value, parentId = "") {
-    let newTask = serializeTask();
-    newTask = {
-      ...newTask,
-      id: generateUniqueId(),
-      value: value,
-    };
-
-    createTask(newTask, parentId);
+    tagDialog.showModal();
   }
 
   function handleSearch() {
@@ -51,16 +33,21 @@
   }
 
   function handleFinalize(e) {
-    for (let i = 0; i < e.detail.items.length; i++) {
-      if (e.detail.items[i].parentId) {
-        e.detail.items[i].parentId = "";
-        saveTask(e.detail.items[i]);
+    let data = e.detail.items;
+
+    data.forEach((task) => {
+      if (task.parentId) {
+        task.parentId = "";
       }
+    });
+
+    if (e.detail.info.trigger === "droppedIntoAnother") {
+      data = data.filter((task) => task.id !== e.detail.info.id);
     }
-    const children = tasks.filter((task) => task.parentId);
-    const ordered = e.detail.items;
-    ordered.push(...children);
-    orderTasks(ordered);
+
+    data.push(...tasks.filter((task) => task.parentId));
+
+    orderTasks(data);
   }
 </script>
 
@@ -68,8 +55,10 @@
   <MainInput onAdd={handleAddTask} onSearch={handleSearch} />
   <div class="h-full overflow-y-auto mt-4 pr-3">
     <ul
+      id="mainGroup"
       class="h-full"
-      use:dndzone={{
+      tabindex="-1"
+      use:dragHandleZone={{
         items: parentTasks,
         flipDurationMs,
         dropTargetStyle: {},
@@ -86,5 +75,16 @@
   </div>
   <FilterPopover />
   <OptionsPopover />
-  <TagDialog />
+  <TagDialog bind:dialog={tagDialog} />
 </div>
+
+<style>
+  ul {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+  }
+  ul:focus {
+    border: none;
+  }
+</style>

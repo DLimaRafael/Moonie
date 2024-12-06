@@ -1,5 +1,6 @@
 <script>
   import { CheckOutline } from "flowbite-svelte-icons";
+  import { dragHandle } from "svelte-dnd-action";
 
   export let isChecked = false;
   export let progress = null;
@@ -12,8 +13,9 @@
 </script>
 
 <button
+  use:dragHandle
   type="button"
-  class="flex items-center select-none justify-center {size} rounded-sm p-0 border border-zinc-400 {background}"
+  class="flex items-center justify-center {size} rounded-sm p-0 border border-zinc-400 {background}"
   on:click
 >
   {#if !total}

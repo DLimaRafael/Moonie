@@ -1,4 +1,12 @@
-<button type="button" on:click {...$$restProps}>
+<button
+  type="button"
+  on:click
+  on:mousedown
+  on:touchstart
+  on:mouseup
+  on:touchend
+  {...$$restProps}
+>
   <slot />
 </button>
 
