@@ -8,16 +8,13 @@
   import IconButton from "./IconButton.svelte";
   import { dialogTask } from "../stores/tasks";
   import { onDestroy, onMount } from "svelte";
+  import { serializeTask } from "../utils/taskManager";
+  import { getTags } from "../utils/tagManager";
+  import { flip } from "svelte/animate";
 
-  export let task = {
-    id: "",
-    value: "",
-    isDone: false,
-    children: [],
-    parentId: "",
-  };
+  export let task = serializeTask();
   export let handleSave = (value, parentId) => {};
-  export let handleDelete = (id, parentId) => {};
+  export let handleDelete = (id) => {};
   export let handleAddTask = (value, parentId) => {};
   export let handleDialog = (value) => {};
   export let childrenProgress = null;
@@ -30,6 +27,7 @@
 
   const hasChildren = !!task.children.length;
 
+  $: tags = task.tags.length && getTags(task.tags);
   $: isTagOpen = $dialogTask.id === task.id;
   $: complete = task.isDone;
   $: btnShow = !inputLock || isMouseOver || isTagOpen;
@@ -68,7 +66,7 @@
   }
 
   function onDelete() {
-    handleDelete(task.id, task.parentId);
+    handleDelete(task.id);
   }
 
   function onAddChild() {
@@ -170,11 +168,9 @@
     />
     <div class="h-full flex {btnDivStyling} transition-all">
       {#if btnShow}
-        {#if !task.parentId}
-          <IconButton on:click={onAddChild} class="rounded-none bg-transparent">
-            <CheckPlusCircleOutline size="md" class="text-zinc-300" />
-          </IconButton>
-        {/if}
+        <IconButton on:click={onAddChild} class="rounded-none bg-transparent">
+          <CheckPlusCircleOutline size="md" class="text-zinc-300" />
+        </IconButton>
         <IconButton
           on:click={(e) => handleDialog(task)}
           class="rounded-none bg-transparent"
@@ -187,4 +183,14 @@
       {/if}
     </div>
   </form>
+  {#if !inputLock && task.tags.length}
+    <div class="flex gap-1 flex-wrap ml-1 mr-1 mb-1">
+      {#each tags as tag (tag.id)}
+        <span
+          class="bg-zinc-600 text-zinc-400 rounded-sm pl-1 pr-1 text-xs font-bold select-none"
+          >{tag.value}</span
+        >
+      {/each}
+    </div>
+  {/if}
 </li>
