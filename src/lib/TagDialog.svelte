@@ -1,28 +1,12 @@
 <script>
-  import {
-    createTag,
-    deleteTag,
-    saveTag,
-    serializeTag,
-  } from "../utils/tagManager";
   import { dialogTask, tagData } from "../stores/tasks";
   import { assignTag, removeTag, serializeTask } from "../utils/taskManager";
   import TagItem from "./TagItem.svelte";
   import { onMount } from "svelte";
 
-  let tagValue = "";
-  let dialog;
+  export let dialog;
 
   $: sortedTags = $tagData.sort((a, b) => a.value.localeCompare(b.value));
-
-  function onSubmit(event) {
-    event.preventDefault();
-    if (!tagValue) return;
-    const newTag = serializeTag();
-    newTag.value = tagValue;
-    createTag(newTag);
-    tagValue = "";
-  }
 
   function onCheck(tagId, isAssigned) {
     if (isAssigned) {
@@ -54,25 +38,19 @@
   class="bg-opacity-50 min-w-52 w-80 mt-24 min-h-fit bg-zinc-700 rounded-md
   drop-shadow-2xl"
 >
-  <ul class="flex flex-col p-3 max-h-60 overflow-y-auto">
-    {#if sortedTags.length}
-      {#each sortedTags as tag (tag.id)}
-        <li>
-          <TagItem {tag} tagList={$dialogTask.tags} handleCheck={onCheck} />
-        </li>
-      {/each}
-    {:else}
-      <p class="m-3 select-none text-zinc-500">No Tags Here...</p>
-    {/if}
-  </ul>
-  <form on:submit={onSubmit}>
-    <hr class="ml-4 mr-4 mt-4 mb-0 border-zinc-600" />
-    <input
-      bind:value={tagValue}
-      class="bg-transparent h-14 pl-4 pr-4 w-full"
-      placeholder="New Tag..."
-    />
-  </form>
+  <div class="min-h-12 pl-2 pr-2 pt-2 pb-2 h-fit overflow-hidden">
+    <ul class="flex flex-col gap-1 max-h-60 overflow-y-auto">
+      {#if sortedTags.length}
+        {#each sortedTags as tag (tag.id)}
+          <li>
+            <TagItem {tag} tagList={$dialogTask.tags} handleCheck={onCheck} />
+          </li>
+        {/each}
+      {:else}
+        <p class="m-3 select-none text-zinc-500">No Tags Here...</p>
+      {/if}
+    </ul>
+  </div>
 </dialog>
 
 <style>

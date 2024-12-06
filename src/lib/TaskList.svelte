@@ -1,11 +1,11 @@
 <script>
-  import { taskData } from "../stores/tasks";
+  import { dialogTask, taskData } from "../stores/tasks";
   import { dragHandleZone } from "svelte-dnd-action";
   import { flip } from "svelte/animate";
   import { flipDurationMs } from "../utils/defaults";
   import { orderTasks } from "../utils/taskManager";
   import { filterData } from "../utils/filterManager";
-  import { handleAddTask, handleDialog } from "../utils/dataManager";
+  import { handleAddTask } from "../utils/dataManager";
   import MainInput from "./MainInput.svelte";
   import TagDialog from "./TagDialog.svelte";
   import FilterPopover from "./FilterPopover.svelte";
@@ -16,6 +16,13 @@
 
   $: tasks = filterData($taskData);
   $: parentTasks = tasks.filter((task) => !task.parentId);
+
+  let tagDialog;
+
+  function handleDialog(task) {
+    dialogTask.set(task);
+    tagDialog.showModal();
+  }
 
   function handleSearch() {
     tasks = filterData($taskData);
@@ -68,7 +75,7 @@
   </div>
   <FilterPopover />
   <OptionsPopover />
-  <TagDialog />
+  <TagDialog bind:dialog={tagDialog} />
 </div>
 
 <style>

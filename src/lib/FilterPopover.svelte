@@ -7,7 +7,7 @@
   import IconButton from "./IconButton.svelte";
   import { TagOutline, TrashBinSolid } from "flowbite-svelte-icons";
   import ConfirmDialog from "./ConfirmDialog.svelte";
-  import { deleteTag, serializeTag } from "../utils/tagManager";
+  import { createTag, deleteTag, serializeTag } from "../utils/tagManager";
 
   $: sortedTags = $tagData.sort((a, b) => a.value.localeCompare(b.value));
   $: untaggedFilter = $taskFilters.tags.includes("none");
@@ -23,6 +23,7 @@
   let confirmTitle;
   let confirmMsg;
   let targetTag = serializeTag();
+  let tagValue;
 
   function calculatePosition() {
     const filterBtn = document.getElementById("filter-button");
@@ -40,6 +41,7 @@
   function onDeleteTag(tag) {
     confirmTitle = "Delete Tag";
     confirmMsg = `"${tag.value}" will be removed from all the tasks assigned, are you sure?`;
+    targetTag = tag;
     confirmDialog.showModal();
   }
 
@@ -51,6 +53,15 @@
   function onCloseConfirm() {
     confirmDialog.close();
     targetTag = serializeTag();
+  }
+
+  function onSubmit(event) {
+    event.preventDefault();
+    if (!tagValue) return;
+    const newTag = serializeTag();
+    newTag.value = tagValue;
+    createTag(newTag);
+    tagValue = "";
   }
 
   onMount(() => {
@@ -69,7 +80,7 @@
   class="m-0 w-72 p-2 bg-zinc-700 bg-opacity-50 shadow-xl rounded-md overflow-hidden"
   style="top: {position.top}; left: {position.left}"
 >
-  <ul class="max-h-72 overflow-y-auto">
+  <ul class="max-h-64 overflow-y-auto">
     {#each sortedTags as tag (tag.id)}
       <TagItem
         handleCheck={onCheck}
@@ -106,6 +117,13 @@
       No Tags to filter
     </span>
   {/if}
+  <form on:submit={onSubmit}>
+    <input
+      bind:value={tagValue}
+      class="bg-zinc-800 text-zinc-300 w-full p-2 mt-2 rounded-md bg-opacity-60"
+      placeholder="New Tag..."
+    />
+  </form>
 </div>
 <ConfirmDialog
   bind:dialog={confirmDialog}

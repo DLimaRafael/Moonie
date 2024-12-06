@@ -184,7 +184,7 @@
     </div>
   </form>
   {#if !inputLock && task.tags.length}
-    <div class="flex gap-1 flex-wrap m-1">
+    <div class="flex gap-1 flex-wrap ml-1 mr-1 mb-1">
       {#each tags as tag (tag.id)}
         <span
           class="bg-zinc-600 text-zinc-400 rounded-sm pl-1 pr-1 text-xs font-bold select-none"
