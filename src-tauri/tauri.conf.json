@@ -42,7 +42,7 @@
   },
   "productName": "moonie",
   "mainBinaryName": "moonie",
-  "version": "0.1.0",
+  "version": "0.2.1",
   "identifier": "rdlima.tauri.moonie",
   "plugins": {},
   "app": {
